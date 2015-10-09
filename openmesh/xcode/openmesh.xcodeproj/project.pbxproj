@@ -1,0 +1,345 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		00FC11EC1B7146D8003525A6 /* calc_edge_lengths.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 00FC11D61B714561003525A6 /* calc_edge_lengths.cpp */; };
+		00FC120B1B714AC7003525A6 /* find_vertex_neighbors.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 001278ED1B682B1600B2C5A0 /* find_vertex_neighbors.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		00FC11E31B7146C5003525A6 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+		00FC12021B714AA3003525A6 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		001278ED1B682B1600B2C5A0 /* find_vertex_neighbors.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = find_vertex_neighbors.cpp; path = ../src/find_vertex_neighbors.cpp; sourceTree = "<group>"; };
+		00FC11D61B714561003525A6 /* calc_edge_lengths.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = calc_edge_lengths.cpp; path = ../src/calc_edge_lengths.cpp; sourceTree = "<group>"; };
+		00FC11E51B7146C5003525A6 /* calc_edge_lengths */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = calc_edge_lengths; sourceTree = BUILT_PRODUCTS_DIR; };
+		00FC12041B714AA3003525A6 /* find_vertex_neighbors */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = find_vertex_neighbors; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		00FC11E21B7146C5003525A6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		00FC12011B714AA3003525A6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		001278EF1B682B2700B2C5A0 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				00FC11D61B714561003525A6 /* calc_edge_lengths.cpp */,
+				001278ED1B682B1600B2C5A0 /* find_vertex_neighbors.cpp */,
+			);
+			name = src;
+			sourceTree = "<group>";
+		};
+		0025B5FA1B67F5E3003C5F86 = {
+			isa = PBXGroup;
+			children = (
+				001278EF1B682B2700B2C5A0 /* src */,
+				0025B6041B67F5E3003C5F86 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		0025B6041B67F5E3003C5F86 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				00FC11E51B7146C5003525A6 /* calc_edge_lengths */,
+				00FC12041B714AA3003525A6 /* find_vertex_neighbors */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		00FC11E41B7146C5003525A6 /* calc_edge_lengths */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 00FC11E91B7146C5003525A6 /* Build configuration list for PBXNativeTarget "calc_edge_lengths" */;
+			buildPhases = (
+				00FC11E11B7146C5003525A6 /* Sources */,
+				00FC11E21B7146C5003525A6 /* Frameworks */,
+				00FC11E31B7146C5003525A6 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = calc_edge_lengths;
+			productName = calc_edge_lengths;
+			productReference = 00FC11E51B7146C5003525A6 /* calc_edge_lengths */;
+			productType = "com.apple.product-type.tool";
+		};
+		00FC12031B714AA3003525A6 /* find_vertex_neighbors */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 00FC12081B714AA3003525A6 /* Build configuration list for PBXNativeTarget "find_vertex_neighbors" */;
+			buildPhases = (
+				00FC12001B714AA3003525A6 /* Sources */,
+				00FC12011B714AA3003525A6 /* Frameworks */,
+				00FC12021B714AA3003525A6 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = find_vertex_neighbors;
+			productName = find_vertex_neighbors;
+			productReference = 00FC12041B714AA3003525A6 /* find_vertex_neighbors */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0025B5FB1B67F5E3003C5F86 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0640;
+				ORGANIZATIONNAME = "Wieden+Kennedy";
+				TargetAttributes = {
+					00FC11E41B7146C5003525A6 = {
+						CreatedOnToolsVersion = 6.4;
+					};
+					00FC12031B714AA3003525A6 = {
+						CreatedOnToolsVersion = 6.4;
+					};
+				};
+			};
+			buildConfigurationList = 0025B5FE1B67F5E3003C5F86 /* Build configuration list for PBXProject "openmesh" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 0025B5FA1B67F5E3003C5F86;
+			productRefGroup = 0025B6041B67F5E3003C5F86 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				00FC11E41B7146C5003525A6 /* calc_edge_lengths */,
+				00FC12031B714AA3003525A6 /* find_vertex_neighbors */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		00FC11E11B7146C5003525A6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				00FC11EC1B7146D8003525A6 /* calc_edge_lengths.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		00FC12001B714AA3003525A6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				00FC120B1B714AC7003525A6 /* find_vertex_neighbors.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		0025B6081B67F5E3003C5F86 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/include/,
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+				);
+				LIBRARY_SEARCH_PATHS = /usr/local/lib;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = (
+					"-lOpenMeshCore",
+					"-lOpenMeshTools",
+				);
+				SDKROOT = macosx;
+				USER_HEADER_SEARCH_PATHS = "";
+			};
+			name = Debug;
+		};
+		0025B6091B67F5E3003C5F86 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/include/,
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+				);
+				LIBRARY_SEARCH_PATHS = /usr/local/lib;
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = (
+					"-lOpenMeshCore",
+					"-lOpenMeshTools",
+				);
+				SDKROOT = macosx;
+				USER_HEADER_SEARCH_PATHS = "";
+			};
+			name = Release;
+		};
+		00FC11EA1B7146C5003525A6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		00FC11EB1B7146C5003525A6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+		00FC12091B714AA3003525A6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		00FC120A1B714AA3003525A6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0025B5FE1B67F5E3003C5F86 /* Build configuration list for PBXProject "openmesh" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0025B6081B67F5E3003C5F86 /* Debug */,
+				0025B6091B67F5E3003C5F86 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		00FC11E91B7146C5003525A6 /* Build configuration list for PBXNativeTarget "calc_edge_lengths" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				00FC11EA1B7146C5003525A6 /* Debug */,
+				00FC11EB1B7146C5003525A6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		00FC12081B714AA3003525A6 /* Build configuration list for PBXNativeTarget "find_vertex_neighbors" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				00FC12091B714AA3003525A6 /* Debug */,
+				00FC120A1B714AA3003525A6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0025B5FB1B67F5E3003C5F86 /* Project object */;
+}
