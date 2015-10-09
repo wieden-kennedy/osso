@@ -17,7 +17,7 @@ Given a 3D wireframe mesh model in OBJ, STL, OFF, or OM format, generate 3D mode
 	$ ln -s /Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD openscad
 	```
 
-3. (Optional) Compile `openmesh/calc_edge_lengths.cpp` and `openmesh/calc_edge_lengths.cpp` to genearte executables and put them in `scripts` folder.
+3. (Optional) Compile `openmesh/calc_edge_lengths.cpp` and `openmesh/calc_edge_lengths.cpp` to generate executables and put them in `scripts` folder.
 4. (Optional) Download the [mesh file](https://drive.google.com/open?id=0B2xef5QHbuSmT013ekExZmJPU1U) and generated [connector models](https://drive.google.com/open?id=0B2xef5QHbuSmQTlFTlYtUEhXTVk).
  
 #### Usage
