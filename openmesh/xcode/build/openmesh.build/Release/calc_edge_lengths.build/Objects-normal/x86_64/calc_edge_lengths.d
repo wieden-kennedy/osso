@@ -1,5 +1,5 @@
 dependencies: \
-  /Users/zhao.he/Dropbox/needybot-shell/openmesh/src/calc_edge_lengths.cpp \
+  /Users/zhao.he/Playground/needybot-shell/openmesh/src/calc_edge_lengths.cpp \
   /usr/local/include/OpenMesh/Core/IO/MeshIO.hh \
   /usr/local/include/OpenMesh/Core/System/config.h \
   /usr/local/include/OpenMesh/Core/System/compiler.hh \
@@ -51,4 +51,18 @@ dependencies: \
   /usr/local/include/OpenMesh/Core/Mesh/PolyMeshT.hh \
   /usr/local/include/OpenMesh/Core/Geometry/MathDefs.hh \
   /usr/local/include/OpenMesh/Core/Mesh/PolyMeshT.cc \
-  /usr/local/include/OpenMesh/Core/Geometry/LoopSchemeMaskT.hh
+  /usr/local/include/OpenMesh/Core/Geometry/LoopSchemeMaskT.hh \
+  /usr/local/include/rapidjson/document.h \
+  /usr/local/include/rapidjson/reader.h \
+  /usr/local/include/rapidjson/rapidjson.h \
+  /usr/local/include/rapidjson/allocators.h \
+  /usr/local/include/rapidjson/encodings.h \
+  /usr/local/include/rapidjson/internal/meta.h \
+  /usr/local/include/rapidjson/internal/stack.h \
+  /usr/local/include/rapidjson/internal/strtod.h \
+  /usr/local/include/rapidjson/internal/ieee754.h \
+  /usr/local/include/rapidjson/internal/biginteger.h \
+  /usr/local/include/rapidjson/internal/diyfp.h \
+  /usr/local/include/rapidjson/internal/pow10.h \
+  /usr/local/include/rapidjson/error/error.h \
+  /usr/local/include/rapidjson/internal/strfunc.h

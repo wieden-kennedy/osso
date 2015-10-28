@@ -7,23 +7,29 @@
 //
 
 //
-// $ brew install open-mesh
+// $ brew install open-mesh rapidjson
 //
 
 #include <iostream>
+#include <fstream>
 #include <OpenMesh/Core/IO/MeshIO.hh>
 #include <OpenMesh/Core/Mesh/PolyMesh_ArrayKernelT.hh>
+#include <rapidjson/document.h>
 
 typedef OpenMesh::PolyMesh_ArrayKernelT<> PolyMesh;
 
 using namespace std;
+using namespace rapidjson;
 
 int main(int argc, char *argv[])
 {
     PolyMesh mesh;
+    std::ifstream fin;
+    Document document;
+    stringstream buffer;
     
-    if ( argc < 2 ) {
-        cerr << "Usage:  calc_edge_lengths <file>" << endl;
+    if ( argc < 3 ) {
+        cerr << "Usage:  calc_edge_lengths <mesh> <config.json>" << endl;
         return -1;
     }
     
@@ -32,16 +38,29 @@ int main(int argc, char *argv[])
         return -1;
     }
     
+    if ( fin.open(argv[2]), !fin.good() ) {
+        std::cerr << "Error: Cannot read file from " << argv[2] << std::endl;
+        return -1;
+    }
+    
     cout << argv[1] << endl << endl;
-
+    
+    buffer << fin.rdbuf();
+    string s = buffer.str();
+    document.Parse(s.c_str());
+    
+    double dia_rod = document["dia_rod"].GetDouble();
+    double dia_sphere =  document["dia_sphere"].GetDouble();
+    double offset = sqrt(dia_sphere*dia_sphere/4.0 - dia_rod*dia_rod/4.0);
+    
     int i = 0;
-    float max_length = 0.0;
-    float min_length = INT_MAX;
-    float sum_length = 0.0;
-    float avg_length = 0.0;
+    double max_length = 0.0;
+    double min_length = INT_MAX;
+    double sum_length = 0.0;
+    double avg_length = 0.0;
     
     for ( const auto& e: mesh.edges() ) {
-        float length = mesh.calc_edge_length(e);
+        double length = mesh.calc_edge_length(e) - 2 * offset;
         cout << "e[" << i++ << "]: " << length << endl;
         max_length = std::max(max_length, length);
         min_length = std::min(min_length, length);
