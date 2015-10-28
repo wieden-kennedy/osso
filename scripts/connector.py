@@ -2,6 +2,7 @@
 # $ pip install solidpython
 #
 
+import json
 from solid import *
 use('connector.scad')
 
@@ -9,7 +10,7 @@ centers = []
 neighbors = []
 
 if len(sys.argv) < 3:
-    print 'Usage:  python needy_connector.py <neighbors.txt> <output_folder>'
+    print 'Usage:  python connector.py <neighbors.txt> <output_folder>'
     sys.exit(0)
 
 neighbors_file = sys.argv[1]
@@ -35,6 +36,9 @@ with open(neighbors_file) as f:
 if not os.path.exists(output_folder):
     os.makedirs(output_folder)
 
+with open('config.json') as f:
+    params = json.loads(f.read())
+
 for i in range(len(centers)):
-    model = connector(centers[i], neighbors[i])
+    model = connector(centers[i], neighbors[i], params['dia_rod'], params['dia_sphere'], params['rod_wall'], params['conn_len'])
     scad_render_to_file(model, output_folder + '/conn' + str(i) + '.scad')
