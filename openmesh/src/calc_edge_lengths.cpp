@@ -70,10 +70,11 @@ int main(int argc, char *argv[])
     avg_length = sum_length / i;
     
     cout << endl;
-    cout << "Edge  total  length: " << sum_length << endl;
-    cout << "Edge average length: " << avg_length << endl;
-    cout << "Edge   max   length: " << max_length << endl;
-    cout << "Edge   min   length: " << min_length << endl;
+    cout << "Edge number         : " << mesh.n_edges() << endl;
+    cout << "Edge length total   : " << sum_length << endl;
+    cout << "Edge length average : " << avg_length << endl;
+    cout << "Edge length max     : " << max_length << endl;
+    cout << "Edge length min     : " << min_length << endl;
     
     return 0;
 }
