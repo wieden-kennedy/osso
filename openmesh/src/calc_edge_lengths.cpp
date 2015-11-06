@@ -51,6 +51,7 @@ int main(int argc, char *argv[])
     
     double dia_rod = document["dia_rod"].GetDouble();
     double dia_sphere =  document["dia_sphere"].GetDouble();
+    double conn_len = document["conn_len"].GetDouble();
     double offset = sqrt(dia_sphere*dia_sphere/4.0 - dia_rod*dia_rod/4.0);
     
     int i = 0;
@@ -75,6 +76,10 @@ int main(int argc, char *argv[])
     cout << "Edge length average : " << avg_length << endl;
     cout << "Edge length max     : " << max_length << endl;
     cout << "Edge length min     : " << min_length << endl;
+    
+    if (min_length + 2 * offset < 2 * conn_len) {
+        cout << endl << "WARNING: Some edge length is too short for the selected connector length " << conn_len << endl;
+    }
     
     return 0;
 }
