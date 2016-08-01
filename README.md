@@ -4,7 +4,7 @@
 
 Given a 3D wireframe model in OBJ, STL, OFF, or OM format, generate 3D models for unique connectors at every vertex, as well as length for every edge.
 
-![ring](https://github.com/wieden-kennedy/needybot-shell/blob/master/cura/ring.jpg?raw=true)
+![ring](https://github.com/needybot/open-vertex/blob/master/cura/ring.jpg?raw=true)
 
 #### Installation
 
@@ -18,7 +18,7 @@ Given a 3D wireframe model in OBJ, STL, OFF, or OM format, generate 3D models fo
 	```
 
 3. (Optional) Compile `openmesh/calc_edge_lengths.cpp` and `openmesh/calc_edge_lengths.cpp` to generate executables and put them in `scripts` folder.
-4. (Optional) Download the [mesh file](https://drive.google.com/open?id=0B2xef5QHbuSmT013ekExZmJPU1U) and generated [connector models](https://drive.google.com/open?id=0B2xef5QHbuSmQTlFTlYtUEhXTVk).
+4. (Optional) Download Needybot [mesh file](https://github.com/needybot/open-vertex/blob/master/mesh/NB_B2_v019d_connector.obj) and generated [connector models](https://drive.google.com/open?id=0B2xef5QHbuSmQTlFTlYtUEhXTVk).
 
 #### Usage
 
@@ -33,4 +33,4 @@ Given a 3D wireframe model in OBJ, STL, OFF, or OM format, generate 3D models fo
 3. Load Cura profile `cura/profile.ini` using `File - Open Profile...`
 4. Generate G-Code `File - Save GCode...` to SD card and print
 
-![cura](https://github.com/wieden-kennedy/needybot-shell/blob/master/cura/example.png?raw=true)
+![cura](https://github.com/needybot/open-vertex/blob/master/cura/example.png?raw=true)
