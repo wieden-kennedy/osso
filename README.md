@@ -25,7 +25,7 @@ Given a 3D wireframe model in OBJ, STL, OFF, or OM format, generate 3D models fo
 1. Generate connector models with the following commands, find output models at `scripts/stl/conn*.stl`. (Skip this if you have already downloaded the connector models in Step 4 of Installation)
 
 	```sh
-	$ cd scrips
+	$ cd scripts
 	$ ./run.sh ../mesh/icosahedron.obj
 	```
 
