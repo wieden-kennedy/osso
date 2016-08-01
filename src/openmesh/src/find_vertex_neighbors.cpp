@@ -1,15 +1,3 @@
-//
-//  main.cpp
-//  find_neighbors
-//
-//  Created by Zhao He on 7/28/15.
-//  Copyright (c) 2015 Wieden+Kennedy. All rights reserved.
-//
-
-//
-// $ brew install open-mesh
-//
-
 #include <iostream>
 #include <OpenMesh/Core/IO/MeshIO.hh>
 #include <OpenMesh/Core/Mesh/PolyMesh_ArrayKernelT.hh>

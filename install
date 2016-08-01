@@ -1,0 +1,551 @@
+#!/bin/bash
+
+DARWIN="darwin"
+DEBIAN="debian"
+FEDORA="fedora"
+
+DEPS_TO_INSTALL=()
+DARWIN_DEPS=("cmake" "git" "python" "pip" "wget")
+DEBIAN_DEPS=("clang" "cmake" "git" "python" "pip" "wget")
+FEDORA_DEPS=("clang" "cmake" "gcc" "gcc-c++" "git" "python" "pip" "wget")
+
+NO_COLOR="\033[0m"
+RED="\033[0;31m"
+GREEN="\033[0;32m"
+YELLOW="\033[0;33m"
+CYAN="\033[0;36m"
+WHITE="\033[0;37m"
+
+OPENMESH_VER="6.2"
+OPENMESH_URL="http://www.openmesh.org/media/Releases/${OPENMESH_VER}/OpenMesh-${OPENMESH_VER}.tar.gz"
+OPENMESH_DL_DIR="/tmp/OpenMesh-${OPENMESH_VER=}"
+
+RAPIDJSON_VER="1.0.2"
+RAPIDJSON_URL="https://github.com/miloyip/rapidjson/archive/v${RAPIDJSON_VER}.tar.gz"
+RAPIDJSON_DL_DIR="/tmp/rapidjson-${RAPIDJSON_VER}"
+
+REINSTALL=0
+USAGE=0
+
+
+function announce_install {
+    echo -e "${YELLOW}#####################################"
+    echo -e "# ${WHITE}Bucky's gonna install $@"
+    echo -e "${YELLOW}#####################################"
+    echo -e "${NO_COLOR}"
+}
+
+
+function compile_bucky_executables {
+    echo -e "${YELLOW}#########################################"
+    echo -e "${WHITE}Compiling Bucky's dependent executables."
+    echo -e "${YELLOW}#########################################"
+    echo -e "${NO_COLOR}"
+
+    (cd /opt/bucky &&
+
+            if [ ! -e build ]; then
+                sudo mkdir build
+            else
+                (cd build && sudo rm -rf *)
+            fi &&
+
+            (cd build && sudo cmake ..) &&
+            (cd build && sudo make)
+    )
+}
+
+
+function deps {
+
+    echo -e "${YELLOW}#########################"
+    echo -e "${WHITE}Updating system packages"
+    echo -e "${YELLOW}#########################"
+    echo -e "${NO_COLOR}"
+
+    sudo $INSTALLER update -y
+
+    for dep in ${DEPS_TO_INSTALL[@]}; do
+        package_install $dep
+    done
+}
+
+
+function install_darwin {
+    echo -e "${YELLOW}I LOVE OS X. COOL TO THE MAX!!"
+    echo -e "${NO_COLOR}"
+
+    if [ -z `which brew` ]; then
+        echo -e "${RED}Sorry, but I need Homebrew to finish up. "\
+             "Can you please install Homebrew and fire me back up?"
+        exit 1
+    fi
+
+    preflight
+    deps
+
+    # install OpenSCAD
+    announce_install "OpenSCAD"
+    brew install openscad
+
+    # install OpenMesh
+    announce_install "OpenMesh"
+    brew install open-mesh rapidjson
+
+    # install SolidPython
+    announce_install "SolidPython"
+    sudo /usr/bin/pip install solidpython
+
+    # link OpenSCAD binary to "openscad" for convenience
+    ln -s /Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD openscad
+
+    # install sh for pip/python
+    sudo pip install sh
+
+}
+
+
+function install_debian {
+    echo -e "${YELLOW}Oooh snap! Skubuntu is my favorite! We are so much alike."
+    echo -e "${NO_COLOR}"
+
+    preflight
+    deps
+
+    # install OpenSCAD
+    announce_install "OpenSCAD"
+    sudo add-apt-repository -y ppa:openscad/releases
+    sudo apt-get update -y
+    sudo apt-get -y install openscad
+
+    # install OpenMesh
+    announce_install "OpenMesh"
+    install_source $OPENMESH_URL $OPENMESH_DL_DIR \
+                    -DCMAKE_BUILD_TYPE=Release \
+                    -DBUILD_APPS=OFF
+
+    sudo mv /usr/local/lib/libOpenMesh* /usr/lib/
+    sudo mv /usr/local/include/OpenMesh /usr/include/
+
+    # install SolidPython
+    announce_install "SolidPython"
+    sudo apt-get install -y rapidjson-dev
+    sudo $(which pip) install solidpython
+
+    # install sh for pip/python
+    sudo pip install sh
+}
+
+
+function install_fedora {
+    echo -e "${YELLOW}DNF with Fedora is all I'm really sayin' though."
+    echo -e "${NO_COLOR}"
+
+    preflight
+    deps
+
+    # install OpenSCAD
+    announce_install "OpenSCAD"
+    sudo yum install -y openscad
+
+    # install OpenMesh
+    announce_install "OpenMesh"
+    install_source ${OPENMESH_URL} ${OPENMESH_DL_DIR} \
+                    -DCMAKE_BUILD_TYPE=Release \
+                    -DBUILD_APPS=OFF
+
+    sudo mv /usr/local/lib/libOpenMesh* /usr/lib64/
+    sudo mv /usr/local/include/OpenMesh /usr/include/
+
+    # install SolidPython
+    announce_install "SolidPython"
+    install_source ${RAPIDJSON_URL} ${RAPIDJSON_DL_DIR}
+    sudo `which pip` install solidpython
+
+    # install sh for pip/python
+    sudo pip install sh
+}
+
+
+function install_source {
+    URL=$1
+    DL_DIR=$2
+    CMAKE_ARGS=${@:3}
+    wget ${URL} -O ${DL_DIR}.tar.gz
+    (cd /tmp && tar xzf ${DL_DIR}.tar.gz)
+    mkdir -p ${DL_DIR}/build
+
+    (cd ${DL_DIR}/build && cmake .. ${CMAKE_ARGS} &&
+            make &&
+            sudo make install
+    )
+
+}
+
+
+function os_type {
+    case `uname` in
+        Linux )
+            which dnf && { OS=$FEDORA; return; }
+            which apt-get && { OS=$DEBIAN; return; }
+            ;;
+        Darwin )
+            OS=$DARWIN
+            ;;
+    esac
+}
+
+
+function package_install {
+
+    case $1 in
+
+        "build-essential" )
+            announce_install "build-essential"
+            sudo $INSTALLER install -y build-essential
+            ;;
+
+        "clang" )
+            announce_install "clang"
+            sudo $INSTALLER install -y clang
+            ;;
+
+        "cmake" )
+            announce_install "cmake"
+            sudo $INSTALLER install -y cmake
+            ;;
+
+        "gcc" )
+            announce_install "gcc"
+            sudo $INSTALLER install -y gcc
+            ;;
+
+        "gcc-c++" )
+            announce_install "gcc-c++"
+            sudo $INSTALLER install -y gcc-c++
+            ;;
+
+        "git" )
+            announce_install "git"
+            if [ $OS = $DARWIN ]; then
+                $INSTALLER install git
+            else
+                sudo $INSTALLER install -y git
+            fi
+            ;;
+
+        "python" )
+            announce_install "python"
+            if [ $OS = $DARWIN ]; then
+                $INSTALLER install -y python
+                $INSTALLER link python
+            elif [ $OS = $DEBIAN ]; then
+                sudo $INSTALLER install -y python2.7
+                sudo ln -s /usr/bin/python2.7 /usr/bin/python
+            elif [ $OS = $FEDORA ]; then
+                sudo $INSTALLER install -y python
+            fi
+            ;;
+
+        "pip" )
+            announce_install "pip"
+            if [ $OS != $DARWIN ]; then
+                wget https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py
+                sudo $(which python) get-pip.py
+            fi
+            ;;
+        "wget" )
+            announce_install "wget"
+            sudo $INSTALLER install -y wget
+            ;;
+    esac
+}
+
+
+function preflight {
+    echo -e "${YELLOW}"
+    echo "################################################"
+    echo -e "${WHITE}Checking for missing dependencies..."
+    echo -e "${YELLOW}################################################"
+    echo -e "${NO_COLOR}"
+    sleep 1
+
+    case $OS in
+        $DEBIAN )
+            _DEPS=${DEBIAN_DEPS[@]}
+            INSTALLER=`which apt-get`
+            ;;
+        $DARWIN )
+            _DEPS=${DARWIN_DEPS[@]}
+            INSTALLER=`which brew`
+            ;;
+        $FEDORA )
+            _DEPS=${FEDORA_DEPS[@]}
+            INSTALLER=`which dnf`
+    esac
+
+    for key in $_DEPS; do
+
+        if which $key > /dev/null; then
+            echo -e "${CYAN}  -> found: $key"
+        else
+            DEPS_TO_INSTALL+=( $key )
+        fi
+
+    done
+
+    function prompt_install {
+        if [ ${#DEPS_TO_INSTALL[@]} -eq 0 ]; then
+            echo -e "${YELLOW}#########################################################"
+            echo -e "${WHITE}Looks like you have all the stuff I need to get started!"
+            echo -e "${YELLOW}#########################################################"
+            return
+        else
+            echo -e "${YELLOW}#########################################################"
+            echo -e "${WHITE}I'm gonna need to install some stuff:"
+            echo -e "${YELLOW}################################################"
+            for key in ${DEPS_TO_INSTALL[@]}; do
+                echo -e "    ${GREEN}- $key"
+            done
+            echo -e "${YELLOW}################################################"
+            echo ""
+            echo -e "${NO_COLOR}That alright? [${GREEN}Y${NO_COLOR}/${RED}n${NO_COLOR}]: "
+
+            read -s response
+
+            case $response in
+                no|No|NO|n|N|0 )
+                    echo ""
+                    echo ":( Dangit. Ok, see you some other time, maybe."
+                    exit 0
+                    ;;
+                yes|Yes|YES|y|Y|1|"" )
+                    :
+                    ;;
+                *)
+                    prompt_install
+                    ;;
+            esac
+        fi
+    }
+
+    prompt_install
+
+}
+
+
+function usage {
+    echo -e "${CYAN}USAGE: ${WHITE}openvertex [PATH_TO_MODEL]"
+    echo ""
+
+    exit 0
+}
+
+
+function check_already_installed {
+    if [[ `command -v openvertex` && REINSTALL -eq 0 ]]; then
+        echo ""
+        echo -e "${WHITE}Looks like OpenVertex has already been installed on this machine."
+        echo "To reinstall, run this installer again using the --force flag."
+
+        exit 1
+    fi
+}
+
+
+function welcome {
+    echo ""
+    echo -e "${YELLOW}################################################################################"
+    echo ""
+    echo "                 BBBB      UU   UU     CC     KK   KK   YY   YY"
+    echo "                 BB  B     UU   UU   CC  CC   KK  KK     YY YY"
+    echo "                 BB  B     UU   UU   CC       KK KK       YY"
+    echo "                 BB  B     UU   UU   CC       KKKK        YY"
+    echo "                 BBBB      UUU UUU   CC       KKKK        YY"
+    echo "                 BB  B      UUUUU    CC  CC   KK KK       YY"
+    echo "                 BB  B                 CC     KK  KK      YY"
+    echo "                 BB  B                        KK   KK"
+    echo "                 BBBB"
+    echo -e "${RED}                                __________"
+    echo "                              .~#########%%;~."
+    echo "                             /############%%;.\\"
+    echo "                            /######/ \/ \%%;,;,\\"
+    echo "                           |#######\    /;;;;.,.|"
+    echo "                           |#########\/%;;;;;.,.|"
+    echo "                  XX       |##/~~\####%;;;/~~\;,|       XX"
+    echo -e "                XX..X      |#|  ${CYAN}o${RED}  \##%;/  ${CYAN}O${RED}  |.|      X..XX"
+    echo "              XX.....X     |##\____/##%;\____/.,|     X.....XX"
+    echo "         XXXXX.....XX      \#########/\;;;;;;,, /      XX.....XXXXX"
+    echo "        X |......XX%,.@      \######/  \;;;;, /      @#%,XX......| X"
+    echo "        X |.....X  @#%,.@     |######%%;;;;,.|     @#%,.@  X.....| X"
+    echo "        X  \...X     @#%,.@   |# # # % ; ; ;,|   @#%,.@     X.../  X"
+    echo "         X# \.X        @#%,.@                  @#%,.@        X./  #"
+    echo "          ##  X          @#%,.@              @#%,.@          X   #"
+    echo "        , \"# #X            @#%,.@          @#%,.@            X ##"
+    echo "           \`###X             @#%,.@      @#%,.@             ####'"
+    echo "          . \' ###              @#%.,@  @#%,.@              ###"
+    echo "            . \";\"                @#%.@#%,.@                ;\"\` \' "
+    echo "              \'                    @#%,.@                   ,."
+    echo "              \` ,                @#%,.@  @@                \`"
+    echo ""
+    echo ""
+    echo ""
+    echo "          $ bucky [-h] [--help] [-r] [--reinstall] [-c] [--compile]"
+    echo ""
+    echo ""
+    echo -e "${YELLOW}################################################################################"
+    echo -e "${WHITE}  Thanks for choosing BUCKY for your 3D-printing endeavors! I hope you enjoy!"
+    echo -e "     To get started, I may need to install a few things. Sound ok? [${GREEN}Y${WHITE}/${RED}n${WHITE}]"
+    echo -e "${YELLOW}################################################################################"
+    echo -e "${NO_COLOR}"
+
+    function get_response {
+        read -s response
+
+        case $response in
+            yes|Yes|YES|y|Y|1|"" )
+                echo -e "${RED}"
+                echo "           AA    WW    WW  EEEEE    SS      OO    MM    MM  EEEEE  !!!"
+                echo "          A  A   WW    WW  EE     SS  SS  OO  OO  MMM  MMM  EE     !!!"
+                echo "         AAAAAA  WW WW WW  EEEE   SS      OO  OO  MM MM MM  EEEE   !!!"
+                echo "        A      A WWW  WWW  EE      SS     OO  OO  MM    MM  EE     !!!"
+                echo "        A      A WW    WW  EEEEE    SS      OO    MM    MM  EE     !!!"
+                echo "                 WW    WW            SS                     EE"
+                echo "                                 SS  SS                     EEEEE  !!!"
+                echo "                                 SS SS                             !!!"
+                echo "                                   SS"
+                echo ""
+                sleep 1
+                echo -e "${RED}              First I need to check out your system and stuff..."
+                echo ""
+                echo ""
+                echo -e "${YELLOW}################################################################################"
+                echo ""
+                sleep 1.5
+                return
+                ;;
+            no|No|NO|n|N|0 )
+                echo "Gotcha. See you later, pal. Let the record show that the operation has been canceled."
+                exit 1
+                ;;
+            * )
+                echo "Sorry, there buddy. I am a program, and only speak binary. Please answer yes or no."
+                echo ""
+                get_response
+                ;;
+        esac
+    }
+
+    get_response
+}
+
+
+function main {
+
+    # Check flags for special cases
+    for arg in $@; do
+        if [[ ${arg} = '-h' || ${arg} = "--help" ]]; then
+            usage
+        elif [[ ${arg} = "-r" || ${arg} = "--reinstall" ]]; then
+            REINSTALL=1
+        elif [[ ${arg} = '-c' || ${arg} = "--compile" ]]; then
+            compile_bucky_executables
+            exit 0
+        fi
+    done
+
+    clear
+    check_already_installed
+    welcome
+    os_type
+
+    case $OS in
+        $DEBIAN )
+            install_debian
+            ;;
+        $DARWIN )
+            install_darwin
+            ;;
+        $FEDORA )
+            install_fedora
+            ;;
+        * ) echo "Operating system not supported. Please use OS X, Debian/Ubuntu, " \
+                 "or CentOS/Fedora/RHEL. If you feel like you've received this message " \
+                 "in error, please file an issue listing your system details so we can " \
+                 "reproduce the issue. If you'd like to add support for your OS, you " \
+                 "can either submit a feature request, or fork bucky and get after it!"
+            ;;
+    esac
+
+    # Grab Bucky Source
+    echo -e "${YELLOW}#########################################################"
+    echo -e "${WHITE}Grabbing Bucky's source code and installing"
+    echo -e "${YELLOW}################################################"
+    if [ -d /opt/bucky ]; then
+        sudo rm -rf /opt/bucky
+    else
+        sudo git clone https://github.com/wieden-kennedy/bucky /opt/bucky
+    fi
+
+    if [ ! -L /usr/local/bin/bucky ]; then
+        sudo chmod +x /opt/bucky/src/scripts/bucky.py
+        sudo ln -s /opt/bucky/src/scripts/bucky.py /usr/local/bin/bucky
+    fi
+
+    if [ ! -L /usr/local/bin/connector ]; then
+        sudo ln -s /opt/bucky/src/scripts/connector.py /usr/local/bin/connector
+    fi
+
+    echo -e "${YELLOW}#########################################################"
+    echo -e "${WHITE}Compiling rad C++ programs"
+    echo -e "${YELLOW}################################################"
+
+
+    # Compile Shared Executables
+    compile_bucky_executables
+
+    echo -e "${GREEN}_______   _______    ______   ________  ______  ________"
+    echo "|       \ |       \  /      \ |        \|      \|        \ "
+    echo "| \$\$\$\$\$\$\$\| \$\$\$\$\$\$\$\|  \$\$\$\$\$\$\| \$\$\$\$\$\$\$\$ \\$\$\$\$\$\$ \\$\$\$\$\$\$\$\$"
+    echo "| \$\$__/ \$\$| \$\$__| \$\$| \$\$  | \$\$| \$\$__      | \$\$     | \$\$"
+    echo "| \$\$    \$\$| \$\$    \$\$| \$\$  | \$\$| \$\$  \     | \$\$     | \$\$"
+    echo "| \$\$\$\$\$\$\$ | \$\$\$\$\$\$\$\| \$\$  | \$\$| \$\$\$\$\$     | \$\$     | \$\$"
+    echo "| \$\$      | \$\$  | \$\$| \$\$__/ \$\$| \$\$       _| \$\$_    | \$\$ __"
+    echo "| \$\$      | \$\$  | \$\$ \\$\$    \$\$| \$\$      |   \$\$ \   | \$\$|  \\"
+    echo "|\\$\$       \\$\$  |\\$\$  \\$\$\$\$\$\$  \\$\$       \\$\$\$\$\$\$    \\$\$| \$\$"
+    echo "                                                      \\$"
+    sleep .5
+    echo ""
+    echo "_______   _______    ______   ________  ______  ________"
+    echo "|       \ |       \  /      \ |        \|      \|        \ "
+    echo "| \$\$\$\$\$\$\$\| \$\$\$\$\$\$\$\|  \$\$\$\$\$\$\| \$\$\$\$\$\$\$\$ \\$\$\$\$\$\$ \\$\$\$\$\$\$\$\$"
+    echo "| \$\$__/ \$\$| \$\$__| \$\$| \$\$  | \$\$| \$\$__      | \$\$     | \$\$"
+    echo "| \$\$    \$\$| \$\$    \$\$| \$\$  | \$\$| \$\$  \     | \$\$     | \$\$"
+    echo "| \$\$\$\$\$\$\$ | \$\$\$\$\$\$\$\| \$\$  | \$\$| \$\$\$\$\$     | \$\$     | \$\$"
+    echo "| \$\$      | \$\$  | \$\$| \$\$__/ \$\$| \$\$       _| \$\$_    | \$\$ __"
+    echo "| \$\$      | \$\$  | \$\$ \\$\$    \$\$| \$\$      |   \$\$ \   | \$\$|  \\"
+    echo "\\$\$       \\$\$   \\$\$  \\$\$\$\$\$\$  \\$\$       \\$\$\$\$\$\$    \\$\$| \$\$"
+    echo "                                                      \\$"
+    sleep .5
+    echo ""
+    echo "_______   _______    ______   ________  ______  ________"
+    echo "|       \ |       \  /      \ |        \|      \|        \ "
+    echo "| \$\$\$\$\$\$\$\| \$\$\$\$\$\$\$\|  \$\$\$\$\$\$\| \$\$\$\$\$\$\$\$ \\$\$\$\$\$\$ \\$\$\$\$\$\$\$\$"
+    echo "| \$\$__/ \$\$| \$\$__| \$\$| \$\$  | \$\$| \$\$__      | \$\$     | \$\$"
+    echo "| \$\$    \$\$| \$\$    \$\$| \$\$  | \$\$| \$\$  \     | \$\$     | \$\$"
+    echo "| \$\$\$\$\$\$\$ | \$\$\$\$\$\$\$\| \$\$  | \$\$| \$\$\$\$\$     | \$\$     | \$\$"
+    echo "| \$\$      | \$\$  | \$\$| \$\$__/ \$\$| \$\$       _| \$\$_    | \$\$ __"
+    echo "| \$\$      | \$\$  | \$\$ \\$\$    \$\$| \$\$      |   \$\$ \   | \$\$|  \\"
+    echo "\\$\$       \\$\$   \\$\$  \\$\$\$\$\$\$  \\$\$       \\$\$\$\$\$\$    \\$\$| \$\$"
+    sleep .5
+    echo ""
+    echo ""
+    echo -e "${YELLOW}################################################################################"
+    echo -e "${WHITE} Thanks again for choosing BUCKY! To get started, check out the tutorial on our"
+    echo -e "${WHITE} Github page. It's got all the goods you need to get started. Enjoy!"
+    echo -e "${YELLOW}################################################################################"
+    echo -e "${NO_COLOR}"
+
+}
+
+main $@
