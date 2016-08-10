@@ -90,7 +90,7 @@ function bucky {
 
     # 3. Generate .scad
     report "Generating $NUM_OF_VERTICES pieces of connectors to $SCAD_DIR."
-    python $(which connector) ${NEIGHBORS_FILE} ${SCAD_DIR}
+    $(which connector) ${NEIGHBORS_FILE} ${SCAD_DIR}
     report "I Did it." "SCAD-TASTIC"
     echo ""
 
