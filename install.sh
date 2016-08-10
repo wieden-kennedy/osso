@@ -182,8 +182,10 @@ function install_debian {
     announce_install "OpenMesh"
     install_package $OPENMESH_URL $OPENMESH_DL_DIR \
                     -DCMAKE_BUILD_TYPE=Release \
-                    -DC_MAKE_INSTALL_PREFIX=/usr \
                     -DBUILD_APPS=OFF
+
+    sudo mv /usr/local/lib/libOpenMesh* /usr/lib/
+    sudo mv /usr/local/include/OpenMesh /usr/include/
 
     # install SolidPython
     announce_install "SolidPython"
@@ -208,9 +210,10 @@ function install_fedora {
     announce_install "OpenMesh"
     install_package ${OPENMESH_URL} ${OPENMESH_DL_DIR} \
                     -DCMAKE_BUILD_TYPE=Release \
-                    -DC_MAKE_INSTALL_PREFIX=/usr \
                     -DBUILD_APPS=OFF
 
+    sudo mv /usr/local/lib/libOpenMesh* /usr/lib/
+    sudo mv /usr/local/include/OpenMesh /usr/include/
 
     # install SolidPython
     announce_install "SolidPython"
