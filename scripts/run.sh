@@ -1,14 +1,25 @@
 #/bin/bash
 
-MESH_MODEL=$1
+# GLOBAL
+USAGE=0
+MESH_MODEL=""
 
+# CONSTANTS
 CONFIG_FILE="config.json"
-ROOT_DIR="${HOME}/Documents/frank"
+ROOT_DIR="${HOME}/Documents/steveapp"
 TMP_DIR=/tmp/`openssl rand -base64 8`
 SCAD_DIR="generated/scad"
 STL_DIR="generated/stl"
 NEIGHBORS_FILE="neighbors.txt"
 EDGE_LENGTHS_FILE="edge_lengths.txt"
+
+# TEXT COLOR
+NO_COLOR="\033[0m"
+RED="\033[0;31m"
+GREEN="\033[0;32m"
+YELLOW="\033[0;33m"
+CYAN="\033[0;36m"
+WHITE="\033[0;37m"
 
 
 function preflight {
@@ -33,7 +44,16 @@ function preflight {
 }
 
 
-function frankify {
+function report {
+    report_type="INFO"
+    if [ ! -z $2 ]; then
+        report_type=$2
+    fi
+
+    echo -e "${YELLOW}[${report_type}] ${NO_COLOR}$1"
+}
+
+function steve_it {
 
     ########################################################
     # Runs all processing on the target model and converts #
@@ -42,33 +62,34 @@ function frankify {
     ########################################################
 
     # 1. Generate all neighbors of all vertices
-    echo "[INFO] Finding vertex neighbors from $MESH_MODEL"
+    report "Finding vertex neighbors from $MESH_MODEL"
     /usr/local/bin/find_vertex_neighbors $MESH_MODEL > ${NEIGHBORS_FILE}
-    echo "[INFO] Complete."
+    report "Complete." "GOOD NEWS"
     echo ""
 
-    echo "[INFO] Counting ${NUM_OF_VERTICES} in $NEIGHBORS_FILE"
+    report "Counting ${NUM_OF_VERTICES} in $NEIGHBORS_FILE"
     NUM_OF_VERTICES=`sed -n '1p' ${TMP_DIR}/${NEIGHBORS_FILE}`
-    echo "[INFO] Complete."
+    report "I did something right!." "RADNESS"
     echo ""
 
     # 2. Calculate edge lengths
-    echo "[INFO] Saved edge lengths to $EDGE_LENGTHS_FILE."
+    report "Saved edge lengths to $EDGE_LENGTHS_FILE."
     /usr/local/bin/calc_edge_lengths $MESH_MODEL $CONFIG_FILE > ${EDGE_LENGTHS_FILE}
-    echo "[INFO] Complete."
+    report "That worked!" "OH YEAH"
     echo ""
 
     # 3. Generate .scad
-    echo "[INFO] Generating $NUM_OF_VERTICES pieces of connectors to $SCAD_DIR."
+    report "Generating $NUM_OF_VERTICES pieces of connectors to $SCAD_DIR."
     python connector.py ${NEIGHBORS_FILE} ${SCAD_DIR}
-    echo "[INFO] Complete."
+    report "I Did it." "SCAD-TASTIC"
     echo ""
 
     # 4. Generate .stl
     for i in $(eval echo "{0..$(($NUM_OF_VERTICES-1))}")
     do
-        echo "[INFO] Generating $STL_DIR/conn$i.stl..."
+        report "Generating $STL_DIR/conn$i.stl..."
         openscad -o $STL_DIR/conn$i.stl $SCAD_DIR/conn$i.scad
+        report "I generated that STL for ya." "ACHIEVEMENT UNLOCKED"
     done
 }
 
@@ -81,10 +102,37 @@ function main {
 
     preflight
 
-    (cd ${TMP_DIR} && frankify)
-    mv ${TMP_DIR} ${ROOT_DIR}/`date +"%Y-%m-%d"`
+    (cd ${TMP_DIR} && steve_it)
+
+    date_stamp=`date +"%s"`
+
+    mv ${TMP_DIR} ${ROOT_DIR}/generated-${date_stamp}
+    report "So, hey...I got all that taken care of for you. You can find the generated" \
+           "files right up in here: ${ROOT_DIR}/generated-${date_stamp}" "BODACIOUS"
+}
+
+p
+function usage {
+
+    ####################
+    # HALP ME PLEZE    #
+    ####################
+
+    echo ""
+    echo -e "${CYAN}USAGE: ${WHITE}steveit [PATH_TO_MESH_MODEL]"
+    exit 0
 }
 
 
+# Get args then jam!
+for arg in $@; do
+    if [[ ${arg} = '-h' || ${arg} = "--help" ]]; then
+        USAGE=1
+    elif [ -f ${arg} ]; then
+        MESH_MODEL=${arg}
+    fi
+done
+
+# Dude, jam it!
 main
 
