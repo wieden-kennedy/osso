@@ -15,7 +15,7 @@ RAPIDJSON_DL_DIR="/tmp/rapidjson-${RAPIDJSON_VER}"
 DEPS_TO_INSTALL=()
 DARWIN_DEPS=("cmake" "git" "python" "pip" "wget")
 DEBIAN_DEPS=("clang" "cmake" "git" "python" "pip" "wget")
-FEDORA_DEPS=("cmake" "gcc" "gcc-c++" "git" "python" "pip" "wget")
+FEDORA_DEPS=("clang" "cmake" "gcc" "gcc-c++" "git" "python" "pip" "wget")
 
 # TEXT COLOR
 NO_COLOR="\033[0m"
@@ -435,13 +435,16 @@ function main {
                  "https://github.com/wieden#kennedy/open#vertex/master/README.md#manual#install."
     esac
 
+    # Grab OpenVertex Source
     if [ -d /opt/open-vertex ]; then
-        sudo rm -r /opt/open-vertex
+        (cd /opt/open-vertex && sudo git pull origin master)
+    else
+        sudo git clone https://github.com/needybot/open-vertex /opt/open-vertex
     fi
 
-    # Grab OpenVertex Source
-    sudo git clone https://github.com/needybot/open-vertex /opt/open-vertex
-    sudo ln -s /opt/open-vertex/scripts/run.sh /usr/local/bin/openvertex
+    if [ ! -L /usr/local/bin/openvertex ]; then
+        sudo ln -s /opt/open-vertex/scripts/run.sh /usr/local/bin/openvertex
+    fi
 
     #Compile Shared Executables
     sudo clang++ \
