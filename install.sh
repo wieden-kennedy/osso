@@ -456,14 +456,14 @@ function main {
     fi
 
     if [ ! -L /usr/local/bin/openvertex ]; then
-        sudo ln -s /opt/open-vertex/scripts/run.sh /usr/local/bin/openvertex
+        sudo ln -s /opt/open-vertex/scripts/bucky /usr/local/bin/openvertex
     fi
 
     if [ ! -L /usr/local/bin/connector ]; then
         sudo ln -s /opt/open-vertex/scripts/connector.py /usr/local/bin/connector
     fi
 
-    #Compile Shared Executables
+    # Compile Shared Executables
     sudo clang++ \
          -std=c++11 \
          -I/usr/local/include \
