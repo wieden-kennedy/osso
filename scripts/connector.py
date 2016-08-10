@@ -2,15 +2,12 @@
 
 import json
 import os
+import sys
 
 import solid.solidpython as solid
 
-# GLOBALS
-OUTPUT_FOLDER = sys.argv[2]
-NEIGHBORS_FILE = sys.argv[1]
 
-
-def centers_neighbors():
+def centers_neighbors(neighbors_file):
     centers = []
     neighbors = []
 
@@ -43,11 +40,13 @@ def preflight():
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
 
+    return sys.argv[1:]
 
-def render_to_file(centers, neighbors):
-    solid.use('connector.scad')
 
-    with open('config.json') as f:
+def render_to_file(centers, neighbors, out_path):
+    solid.use('./connector.scad')
+
+    with open('./config.json') as f:
         params = json.loads(f.read())
 
     for i, center in enumerate(centers):
@@ -57,13 +56,14 @@ def render_to_file(centers, neighbors):
                           params['rod_wall'], params['conn_len'])
 
         file_name = '{}.scad'.format(i)
-        path = os.path.join(output_folder, 'conn', file_name)
+        path = os.path.join(output_path, 'conn', file_name)
 
         solid.scad_render_to_file(model, file_path)
 
 
 if __name__ == '__main__':
 
-    preflight()
-    centers, neighbors = centers_neighbors()
-    render_to_file(centers, neighbors)
+    output_folder, neighbors_file = preflight()
+    centers, neighbors = centers_neighbors(neighbors_file)
+
+    render_to_file(centers, neighbors, output_folder)
