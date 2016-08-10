@@ -7,7 +7,7 @@ MESH_MODEL=""
 # CONSTANTS
 CONFIG_FILE="config.json"
 ROOT_DIR="${HOME}/Documents/steveapp"
-TMP_DIR=/tmp/`openssl rand -base64 8`
+TMP_DIR=/tmp/$(openssl rand -base64 8)
 SCAD_DIR="generated/scad"
 STL_DIR="generated/stl"
 NEIGHBORS_FILE="neighbors.txt"
@@ -21,14 +21,14 @@ YELLOW="\033[0;33m"
 CYAN="\033[0;36m"
 WHITE="\033[0;37m"
 
+PROMPTS=("GOOD NEWS" "RADNESS" "OH YEAH" "BODACIOUS" "OUTTA SIGHT" "UNREAL" "ACHIEVEMENT UNLOCKED")
+
 
 function preflight {
 
-    #############################################
-    # Sets up temporary directory structure for #
-    # generated files, and copies target model  #
-    # into temporary root for work.             #
-    #############################################
+    # Sets up temporary directory structure for
+    # generated files, and copies target model
+    # into temporary root for work.
 
     if [ ! -d "${ROOT_DIR}" ]; then
         mkdir ${ROOT_DIR}
@@ -40,11 +40,23 @@ function preflight {
     mkdir -p ${TMP_DIR}/${STL_DIR}
 
     # Copy the mesh model into the temp directory
-    cp ${MESH_MODEL} ${TMP_DIR}/`basename ${MESH_MODEL}`
+    cp ${MESH_MODEL} ${TMP_DIR}/$(basename ${MESH_MODEL})
+}
+
+
+function random_prompt {
+
+    # Gets a random prompt for information output
+
+    random=$$$(date +%s)
+    echo ${PROMPTS[$random % ${#PROMPTS[@]}]}
 }
 
 
 function report {
+
+    # Reports execution status with info prompt
+
     report_type="INFO"
     if [ ! -z $2 ]; then
         report_type=$2
@@ -53,29 +65,27 @@ function report {
     echo -e "${YELLOW}[${report_type}] ${NO_COLOR}$1"
 }
 
-function steve_it {
+function bucky {
 
-    ########################################################
-    # Runs all processing on the target model and converts #
-    # the mesh into a set of vertices and connectors for   #
-    # output/printing.                                     #
-    ########################################################
+    # Runs all processing on the target model and converts
+    # the mesh into a set of vertices and connectors for
+    # output/printing.
 
     # 1. Generate all neighbors of all vertices
     report "Finding vertex neighbors from $MESH_MODEL"
     /usr/local/bin/find_vertex_neighbors $MESH_MODEL > ${NEIGHBORS_FILE}
-    report "Complete." "GOOD NEWS"
+    report "Complete." $(random_prompt)
     echo ""
 
     report "Counting ${NUM_OF_VERTICES} in $NEIGHBORS_FILE"
-    NUM_OF_VERTICES=`sed -n '1p' ${TMP_DIR}/${NEIGHBORS_FILE}`
-    report "I did something right!." "RADNESS"
+    NUM_OF_VERTICES=$(sed -n '1p' ${TMP_DIR}/${NEIGHBORS_FILE})
+    report "I did something right!." $(random_prompt)
     echo ""
 
     # 2. Calculate edge lengths
     report "Saved edge lengths to $EDGE_LENGTHS_FILE."
     /usr/local/bin/calc_edge_lengths $MESH_MODEL $CONFIG_FILE > ${EDGE_LENGTHS_FILE}
-    report "That worked!" "OH YEAH"
+    report "That worked!" $(random_prompt)
     echo ""
 
     # 3. Generate .scad
@@ -89,29 +99,11 @@ function steve_it {
     do
         report "Generating $STL_DIR/conn$i.stl..."
         openscad -o $STL_DIR/conn$i.stl $SCAD_DIR/conn$i.scad
-        report "I generated that STL for ya." "ACHIEVEMENT UNLOCKED"
+        report "I generated that STL for ya." $(random_prompt)
     done
 }
 
 
-function main {
-
-    ####################
-    # Entry point      #
-    ####################
-
-    preflight
-
-    (cd ${TMP_DIR} && steve_it)
-
-    date_stamp=`date +"%s"`
-
-    mv ${TMP_DIR} ${ROOT_DIR}/generated-${date_stamp}
-    report "So, hey...I got all that taken care of for you. You can find the generated" \
-           "files right up in here: ${ROOT_DIR}/generated-${date_stamp}" "BODACIOUS"
-}
-
-p
 function usage {
 
     ####################
@@ -124,15 +116,30 @@ function usage {
 }
 
 
-# Get args then jam!
-for arg in $@; do
-    if [[ ${arg} = '-h' || ${arg} = "--help" ]]; then
-        USAGE=1
-    elif [ -f ${arg} ]; then
-        MESH_MODEL=${arg}
-    fi
-done
+function main {
+
+    # Entry point
+
+    for arg in $@; do
+        if [[ ${arg} = '-h' || ${arg} = "--help" ]]; then
+            USAGE=1
+        elif [ -f ${arg} ]; then
+            MESH_MODEL=${arg}
+        fi
+    done
+
+    preflight
+
+    (cd ${TMP_DIR} && bucky)
+
+    date_stamp=$(date +"%s")
+
+    mv ${TMP_DIR} ${ROOT_DIR}/generated-${date_stamp}
+    report "So, hey...I got all that taken care of for you. You can find the generated" \
+           "files right up in here: ${ROOT_DIR}/generated-${date_stamp}" $(random_prompt)
+}
+
 
 # Dude, jam it!
-main
+main $@
 

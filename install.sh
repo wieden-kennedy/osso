@@ -135,12 +135,12 @@ function deps {
 
 
 function install_darwin {
-    echo -e "${YELLOW}We have a Mac user."
+    echo -e "${YELLOW}I LOVE OS X. COOL TO THE MAX!!"
     echo -e "${NO_COLOR}"
 
     if [ -z `which brew` ]; then
-        echo -e "${RED}Homebrew is required to run this installer. "\
-             "Please install Homebrew and re-run."
+        echo -e "${RED}Sorry, but I need Homebrew to finish up. "\
+             "Can you please install Homebrew and fire me back up?"
         exit 1
     fi
 
@@ -166,7 +166,7 @@ function install_darwin {
 
 
 function install_debian {
-    echo -e "${YELLOW}Oooh, Debian, huh? Lemme guess Skubuntu? No...Brubuntu?"
+    echo -e "${YELLOW}Oooh snap! Skubuntu is my favorite! We are so much alike."
     echo -e "${NO_COLOR}"
 
     preflight
@@ -194,7 +194,7 @@ function install_debian {
 
 
 function install_fedora {
-    echo -e "${YELLOW}DNF with Fedora is all I'm sayin'."
+    echo -e "${YELLOW}DNF with Fedora is all I'm really sayin' though."
     echo -e "${NO_COLOR}"
 
     preflight
@@ -239,9 +239,10 @@ function install_package {
 function preflight {
     echo -e "${YELLOW}"
     echo "################################################"
-    echo -e "${WHITE}Checking for unmet system dependencies..."
+    echo -e "${WHITE}Checking for missing dependencies..."
     echo -e "${YELLOW}################################################"
     echo -e "${NO_COLOR}"
+    sleep 1
 
     case $OS in
         $DEBIAN )
@@ -270,21 +271,21 @@ function preflight {
     function prompt_install {
         echo -e "${YELLOW}"
         echo "################################################"
-        echo -e "${WHITE}OpenVertex requires these packages be installed:"
+        echo -e "${WHITE}I'm gonna need to install some stuff::"
         echo -e "${YELLOW}################################################"
         for key in ${DEPS_TO_INSTALL[@]}; do
            echo -e "    ${GREEN}- $key"
         done
         echo -e "${YELLOW}################################################"
         echo ""
-        echo -e "${NO_COLOR}Continue? [${GREEN}Y${NO_COLOR}/${RED}n${NO_COLOR}]: "
+        echo -e "${NO_COLOR}That alright? [${GREEN}Y${NO_COLOR}/${RED}n${NO_COLOR}]: "
 
-        read response
+        read -s response
 
         case $response in
             no|No|NO|n|N|0 )
                 echo ""
-                echo ":( I get it. Operation aborted."
+                echo ":( Dangit. Ok, see you some other time, maybe."
                 exit 0
                 ;;
             yes|Yes|YES|y|Y|1|"" )
@@ -334,20 +335,18 @@ function check_already_installed {
 
 
 function welcome {
+    echo ""
     echo -e "${YELLOW}################################################################################"
     echo ""
-    echo "                  S      TTTTTT      EEEEEE     V     V  EEEEEE                            "
-    echo "                S   S      TT        EE          V   V   EE"
-    echo "                S          TT        EEEE         V V    EEEE"
-    echo "                  S        TT        EE            V     EE"
-    echo "                    S      TT        EE                  EE"
-    echo "                S   S      TT        EEEEEE              EEEEEE"
-    echo "                  S"
-    # echo "         o    pp   eeee n     n  v       v eeee rr  ttttt eeee x   x"
-    # echo "       o   o  p p  e    n n   n   v     v  e    r r   t   e     x x"
-    # echo "       o   o  pp   eee  n   n n    v   v   eee  rr    t   eee    x"
-    # echo "       o   o  p    e    n    nn     v v    e    r r   t   e     x x"
-    # echo "         o    p    eeee n     n      v     eeee r  r  t   eeee x   x"
+    echo "                 BBBB      UU   UU     CC     KK   KK   YY   YY"
+    echo "                 BB  B     UU   UU   CC  CC   KK  KK     YY YY"
+    echo "                 BB  B     UU   UU   CC       KK KK       YY"
+    echo "                 BB  B     UU   UU   CC       KKKK        YY"
+    echo "                 BBBB      UUU UUU   CC       KKKK        YY"
+    echo "                 BB  B      UUUUU    CC  CC   KK KK       YY"
+    echo "                 BB  B                 CC     KK  KK      YY"
+    echo "                 BB  B                        KK   KK"
+    echo "                 BBBB"
     echo -e "${RED}                                __________"
     echo "                              .~#########%%;~."
     echo "                             /############%%;.\\"
@@ -372,24 +371,34 @@ function welcome {
     echo ""
     echo ""
     echo -e "${YELLOW}################################################################################"
-    echo -e "${WHITE}Thanks for choosing me (STEvE) for your 3D-printing endeavors! We hope you enjoy."
-    echo -e "To get started, we will need to install a few things. Sound ok? [${GREEN}Y${WHITE}/${RED}n${WHITE}]"
+    echo -e "${WHITE}  Thanks for choosing BUCKY for your 3D-printing endeavors! I hope you enjoy!"
+    echo -e "     To get started, I may need to install a few things. Sound ok? [${GREEN}Y${WHITE}/${RED}n${WHITE}]"
     echo -e "${YELLOW}################################################################################"
     echo -e "${NO_COLOR}"
 
     function get_response {
-        read response
+        read -s response
 
         case $response in
             yes|Yes|YES|y|Y|1|"" )
-                echo "Sweeeeeet. Let's do this. In 3..."
+                echo -e "${RED}"
+                echo "           AA    WW    WW  EEEEE    SS      OO    MM    MM  EEEEE  !!!"
+                echo "          A  A   WW    WW  EE     SS  SS  OO  OO  MMM  MMM  EE     !!!"
+                echo "         AAAAAA  WW WW WW  EEEE   SS      OO  OO  MM MM MM  EEEE   !!!"
+                echo "        A      A WWW  WWW  EE      SS     OO  OO  MM    MM  EE     !!!"
+                echo "        A      A WW    WW  EEEEE    SS      OO    MM    MM  EE     !!!"
+                echo "                 WW    WW            SS                     EE"
+                echo "                                 SS  SS                     EEEEE  !!!"
+                echo "                                 SS SS                             !!!"
+                echo "                                   SS"
+                echo ""
                 sleep 1
-                echo "                             2..."
-                sleep 1
-                echo "                             1..."
-                sleep 1
+                echo -e "${RED}              First I need to check out your system and stuff..."
                 echo ""
                 echo ""
+                echo -e "${YELLOW}################################################################################"
+                echo ""
+                sleep 2
                 return
                 ;;
             no|No|NO|n|N|0 )
@@ -414,6 +423,7 @@ function main {
         usage
     fi
 
+    clear
     check_already_installed
     welcome
     os_type
@@ -432,10 +442,10 @@ function main {
         * ) echo "Operating system not supported. Please use OS X, Debian/Ubuntu, " \
                  "or CentOS/Fedora/RHEL, or install required tools manually as " \
                  "outlined in the README file, at " \
-                 "https://github.com/wieden#kennedy/open#vertex/master/README.md#manual#install."
+                 "https://github.com/wieden#kennedy/open-vertex/master/README.md#manual-install."
     esac
 
-    # Grab OpenVertex Source
+    # Grab Bucky Source
     if [ -d /opt/open-vertex ]; then
         (cd /opt/open-vertex && sudo git pull origin master)
     else
@@ -444,6 +454,10 @@ function main {
 
     if [ ! -L /usr/local/bin/openvertex ]; then
         sudo ln -s /opt/open-vertex/scripts/run.sh /usr/local/bin/openvertex
+    fi
+
+    if [ ! -L /usr/local/bin/connector ]; then
+        sudo ln -s /opt/open-vertex/scripts/connector.py /usr/local/bin/connector
     fi
 
     #Compile Shared Executables
@@ -462,6 +476,7 @@ function main {
          -lOpenMeshCore \
          -lOpenMeshTools \
          /opt/open-vertex/openmesh/src/find_vertex_neighbors.cpp -o /usr/local/bin/find_vertex_neighbors
+
 
 }
 
