@@ -1,44 +1,69 @@
-#
-# $ pip install solidpython
-#
+#!/usr/bin/python
 
 import json
-from solid import *
-use('connector.scad')
+import os
 
-centers = []
-neighbors = []
+import solid.solidpython as solid
 
-if len(sys.argv) < 3:
-    print 'Usage:  python connector.py <neighbors.txt> <output_folder>'
-    sys.exit(0)
+# GLOBALS
+OUTPUT_FOLDER = sys.argv[2]
+NEIGHBORS_FILE = sys.argv[1]
 
-neighbors_file = sys.argv[1]
-output_folder = sys.argv[2]
 
-with open(neighbors_file) as f:
-    line = f.readline()
-    line = f.readline()
-    while True:
+def centers_neighbors():
+    centers = []
+    neighbors = []
+
+    with open(neighbors_file) as f:
         line = f.readline()
-        if not line:
-            break
-        v = [float(line.strip().split()[i]) for i in range(1,4)]
-        centers.append(v)
-        vv = []
+        line = f.readline()
         while True:
             line = f.readline()
-            if not line.strip():
-                neighbors.append(vv)
+            if not line:
                 break
-            vv.append([float(line.strip().split()[i]) for i in range(1,4)])
+            v = [float(line.strip().split()[i + 1]) for i in range(3)]
+            centers.append(v)
 
-if not os.path.exists(output_folder):
-    os.makedirs(output_folder)
+            vv = []
+            while True:
+                line = f.readline()
+                if not line.strip():
+                    neighbors.append(vv)
+                    break
+                vv.append([float(line.strip().split()[i + 1]) for i in range(3)])
 
-with open('config.json') as f:
-    params = json.loads(f.read())
+    return centers, neighbors
 
-for i in range(len(centers)):
-    model = connector(centers[i], neighbors[i], params['dia_rod'], params['dia_sphere'], params['rod_wall'], params['conn_len'])
-    scad_render_to_file(model, output_folder + '/conn' + str(i) + '.scad')
+
+def preflight():
+    if len(sys.argv) < 3:
+        print('Usage: python connector.py <neighbors.txt> <output_folder>')
+        sys.exit(0)
+
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
+
+
+def render_to_file(centers, neighbors):
+    solid.use('connector.scad')
+
+    with open('config.json') as f:
+        params = json.loads(f.read())
+
+    for i, center in enumerate(centers):
+        # connector object injected into current ns by `solid.use`
+        model = connector(center, neighbors[i],
+                          params['dia_rod'], params['dia_sphere'],
+                          params['rod_wall'], params['conn_len'])
+
+        file_name = '{}.scad'.format(i)
+        path = os.path.join(output_folder, 'conn', file_name)
+
+        solid.scad_render_to_file(model, file_path)
+
+
+if __name__ == '__main__':
+
+    preflight()
+    centers, neighbors = centers_neighbors()
+    render_to_file(centers, neighbors)
