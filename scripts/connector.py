@@ -1,13 +1,26 @@
 #!/usr/bin/python
 
+import argparse
 import json
 import os
 import sys
 
-import solid.solidpython as solid
+from solid import *
 
 
 def centers_neighbors(neighbors_file):
+    """
+    Method that extracts vertex centers and their neighbors from the
+    given neighbors stl file.
+
+    Args:
+        neighbors_file (str): the path to the neighbors file to parse.
+
+    Returns:
+        centers (list[float]): a list of the vertex centers
+        neighbors (list[float]: a list of the neighbors for each vertex
+    """
+
     centers = []
     neighbors = []
 
@@ -32,21 +45,44 @@ def centers_neighbors(neighbors_file):
     return centers, neighbors
 
 
-def preflight():
-    if len(sys.argv) < 3:
-        print('Usage: python connector.py <neighbors.txt> <output_folder>')
-        sys.exit(0)
+def parse_args():
 
-    if not os.path.exists(output_folder):
-        os.makedirs(output_folder)
+    """
+    Argument parser for this program.
 
-    return sys.argv[1:]
+    Returns:
+        args (argparse.Namespace): kv tuple of arguments and their values
+    """
+
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("-o", "--output-path", type=str,
+                        help="where to store the generated stl files")
+    parser.add_argument('-n', '--neighbor-file', type=str,
+                        help='where the vertex neighbors are defined')
+
+    if len(sys.argv[1:]) == 0:
+        parser.print_help()
+        parser.exit()
+
+    return parser.parse_args()
 
 
 def render_to_file(centers, neighbors, out_path):
-    solid.use('./connector.scad')
 
-    with open('./config.json') as f:
+    """
+    Uses a SCAD model to render the vertex connections as 3D-printable models
+
+    Args:
+        centers (list[float]): a list of vertex centers
+        neighbors (list[float]): a list of vertex neighbors
+        out_path (str): the path to which the model files should be written
+
+    """
+
+    use('/opt/open-vertex/scripts/connector.scad')
+
+    with open('/opt/open-vertex/scripts/config.json') as f:
         params = json.loads(f.read())
 
     for i, center in enumerate(centers):
@@ -56,14 +92,20 @@ def render_to_file(centers, neighbors, out_path):
                           params['rod_wall'], params['conn_len'])
 
         file_name = '{}.scad'.format(i)
-        path = os.path.join(output_path, 'conn', file_name)
+        render_path = os.path.join(out_path, 'conn')
 
-        solid.scad_render_to_file(model, file_path)
+        if not os.path.exists(render_path):
+            os.makedirs(render_path)
+
+        scad_render_to_file(model, os.path.join(render_path, file_name))
 
 
 if __name__ == '__main__':
 
-    output_folder, neighbors_file = preflight()
-    centers, neighbors = centers_neighbors(neighbors_file)
+    args = parse_args()
 
-    render_to_file(centers, neighbors, output_folder)
+    if not os.path.exists(args.output_path):
+        os.makedirs(args.output_path)
+
+    centers, neighbors = centers_neighbors(args.neighbor_file)
+    render_to_file(centers, neighbors, args.output_path)

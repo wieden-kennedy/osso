@@ -7,9 +7,9 @@ MESH_MODEL=""
 # CONSTANTS
 CONFIG_FILE="config.json"
 ROOT_DIR="${HOME}/Documents/__bucky__"
-TMP_DIR=/tmp/$(openssl rand -base64 )
-SCAD_DIR="generated/scad"
-STL_DIR="generated/stl"
+TMP_DIR=/tmp/$$$(date +%s)
+SCAD_DIR="${TMP_DIR}/scad"
+STL_DIR="${TMP_DIR}/stl"
 NEIGHBORS_FILE="neighbors.txt"
 EDGE_LENGTHS_FILE="edge_lengths.txt"
 
@@ -21,7 +21,13 @@ YELLOW="\033[0;33m"
 CYAN="\033[0;36m"
 WHITE="\033[0;37m"
 
-PROMPTS=("GOOD NEWS" "RADNESS" "OH YEAH" "BODACIOUS" "OUTTA SIGHT" "UNREAL" "ACHIEVEMENT UNLOCKED")
+PROMPTS=("GOOD\ NEWS" \
+             "RADNESS" \
+             "OH\ YEAH" \
+             "BODACIOUS" \
+             "OUTTA\ SIGHT" \
+             "UNREAL" \
+             "ACHIEVEMENT\ UNLOCKED")
 
 
 function preflight {
@@ -31,13 +37,13 @@ function preflight {
     # into temporary root for work.
 
     if [ ! -e "${ROOT_DIR}" ]; then
-        mkdir ${ROOT_DIR}
+        mkdir -p ${ROOT_DIR}
     fi
 
     # Create temporary directory structure
-    mkdir ${TMP_DIR}
-    mkdir -p ${TMP_DIR}/${SCAD_DIR}
-    mkdir -p ${TMP_DIR}/${STL_DIR}
+    mkdir -p ${TMP_DIR}
+    mkdir -p ${SCAD_DIR}
+    mkdir -p ${STL_DIR}
 
     # Copy the mesh model into the temp directory
     cp ${MESH_MODEL} ${TMP_DIR}/$(basename ${MESH_MODEL})
@@ -62,7 +68,7 @@ function report {
         report_type=$2
     fi
 
-    echo -e "${YELLOW}[${report_type}] ${NO_COLOR}$1"
+    echo -e "${YELLOW}[${report_typne}] ${NO_COLOR}$1"
 }
 
 function bucky {
@@ -90,7 +96,7 @@ function bucky {
 
     # 3. Generate .scad
     report "Generating $NUM_OF_VERTICES pieces of connectors to $SCAD_DIR."
-    $(which connector) ${NEIGHBORS_FILE} ${SCAD_DIR}
+    $(which connector) -n ${NEIGHBORS_FILE} -o ${SCAD_DIR}
     report "I Did it." "SCAD-TASTIC"
     echo ""
 
@@ -98,7 +104,7 @@ function bucky {
     for i in $(eval echo "{0..$(($NUM_OF_VERTICES-1))}")
     do
         report "Generating $STL_DIR/conn$i.stl..."
-        openscad -o $STL_DIR/conn$i.stl $SCAD_DIR/conn$i.scad
+        openscad -o $STL_DIR/conn${i}.stl $SCAD_DIR/conn/${i}.scad
         report "I generated that STL for ya." $(random_prompt)
         echo ""
     done
@@ -133,12 +139,11 @@ function main {
 
     (cd ${TMP_DIR} && bucky)
 
-    date_stamp=$(date +"%s")
+    date_stamp=$(date +"%Y-%m-%dT%H:%M")
 
-    echo "that temp directory: ${TMP_DIR}"
     mv ${TMP_DIR} ${ROOT_DIR}/generated-${date_stamp}
-    report "So, hey...I got all that taken care of for you. You can find the generated" \
-           "files right up in here: ${ROOT_DIR}/generated-${date_stamp}" $(random_prompt)
+    cp /opt/bucky/cura/profile.ini ${ROOT_DIR}/generated-${date_stamp}/cura_profile.ini
+    report "So, hey...I got all that taken care of for you. You can find the generated files right up in here: ${ROOT_DIR}/generated-${date_stamp}" $(random_prompt)
 }
 
 

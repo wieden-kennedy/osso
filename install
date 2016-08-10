@@ -228,7 +228,7 @@ function install_package {
     DL_DIR=$2
     CMAKE_ARGS=${@:3}
     wget ${URL} -O ${DL_DIR}.tar.gz
-    tar xzf ${DL_DIR}.tar.gz
+    (cd /tmp && tar xzf ${DL_DIR}.tar.gz)
     mkdir -p ${DL_DIR}/build
 
     (cd ${DL_DIR}/build && cmake .. ${CMAKE_ARGS} &&
@@ -450,13 +450,13 @@ function main {
 
     # Grab Bucky Source
     if [ -d /opt/open-vertex ]; then
-        (cd /opt/open-vertex && sudo git pull origin master)
+        (cd /opt/open-vertex && sudo git stash && sudo git pull origin master)
     else
         sudo git clone https://github.com/needybot/open-vertex /opt/open-vertex
     fi
 
     if [ ! -L /usr/local/bin/openvertex ]; then
-        sudo ln -s /opt/open-vertex/scripts/bucky /usr/local/bin/openvertex
+        sudo ln -s /opt/open-vertex/scripts/bucky /usr/local/bin/bucky
     fi
 
     if [ ! -L /usr/local/bin/connector ]; then
