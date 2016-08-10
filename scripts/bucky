@@ -6,8 +6,8 @@ MESH_MODEL=""
 
 # CONSTANTS
 CONFIG_FILE="config.json"
-ROOT_DIR="${HOME}/Documents/steveapp"
-TMP_DIR=/tmp/$(openssl rand -base64 8)
+ROOT_DIR="${HOME}/Documents/__bucky__"
+TMP_DIR=/tmp/$(openssl rand -base64 )
 SCAD_DIR="generated/scad"
 STL_DIR="generated/stl"
 NEIGHBORS_FILE="neighbors.txt"
@@ -30,7 +30,7 @@ function preflight {
     # generated files, and copies target model
     # into temporary root for work.
 
-    if [ ! -d "${ROOT_DIR}" ]; then
+    if [ ! -e "${ROOT_DIR}" ]; then
         mkdir ${ROOT_DIR}
     fi
 
@@ -73,7 +73,7 @@ function bucky {
 
     # 1. Generate all neighbors of all vertices
     report "Finding vertex neighbors from $MESH_MODEL"
-    /usr/local/bin/find_vertex_neighbors $MESH_MODEL > ${NEIGHBORS_FILE}
+    $(which find_vertex_neighbors) $MESH_MODEL > ${NEIGHBORS_FILE}
     report "Complete." $(random_prompt)
     echo ""
 
@@ -84,13 +84,13 @@ function bucky {
 
     # 2. Calculate edge lengths
     report "Saved edge lengths to $EDGE_LENGTHS_FILE."
-    /usr/local/bin/calc_edge_lengths $MESH_MODEL $CONFIG_FILE > ${EDGE_LENGTHS_FILE}
+    $(which calc_edge_lengths ) $MESH_MODEL $CONFIG_FILE > ${EDGE_LENGTHS_FILE}
     report "That worked!" $(random_prompt)
     echo ""
 
     # 3. Generate .scad
     report "Generating $NUM_OF_VERTICES pieces of connectors to $SCAD_DIR."
-    python connector.py ${NEIGHBORS_FILE} ${SCAD_DIR}
+    python $(which connector) ${NEIGHBORS_FILE} ${SCAD_DIR}
     report "I Did it." "SCAD-TASTIC"
     echo ""
 
@@ -100,6 +100,7 @@ function bucky {
         report "Generating $STL_DIR/conn$i.stl..."
         openscad -o $STL_DIR/conn$i.stl $SCAD_DIR/conn$i.scad
         report "I generated that STL for ya." $(random_prompt)
+        echo ""
     done
 }
 
@@ -134,6 +135,7 @@ function main {
 
     date_stamp=$(date +"%s")
 
+    echo "that temp directory: ${TMP_DIR}"
     mv ${TMP_DIR} ${ROOT_DIR}/generated-${date_stamp}
     report "So, hey...I got all that taken care of for you. You can find the generated" \
            "files right up in here: ${ROOT_DIR}/generated-${date_stamp}" $(random_prompt)
