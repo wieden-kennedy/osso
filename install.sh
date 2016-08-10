@@ -336,11 +336,18 @@ function check_already_installed {
 function welcome {
     echo -e "${YELLOW}################################################################################"
     echo ""
-    echo "         o    pp   eeee n     n  v       v eeee rr  ttttt eeee x   x"
-    echo "       o   o  p p  e    n n   n   v     v  e    r r   t   e     x x"
-    echo "       o   o  pp   eee  n   n n    v   v   eee  rr    t   eee    x"
-    echo "       o   o  p    e    n    nn     v v    e    r r   t   e     x x"
-    echo "         o    p    eeee n     n      v     eeee r  r  t   eeee x   x"
+    echo "                  S      TTTTTT      EEEEEE     V     V  EEEEEE                            "
+    echo "                S   S      TT        EE          V   V   EE"
+    echo "                S          TT        EEEE         V V    EEEE"
+    echo "                  S        TT        EE            V     EE"
+    echo "                    S      TT        EE                  EE"
+    echo "                S   S      TT        EEEEEE              EEEEEE"
+    echo "                  S"
+    # echo "         o    pp   eeee n     n  v       v eeee rr  ttttt eeee x   x"
+    # echo "       o   o  p p  e    n n   n   v     v  e    r r   t   e     x x"
+    # echo "       o   o  pp   eee  n   n n    v   v   eee  rr    t   eee    x"
+    # echo "       o   o  p    e    n    nn     v v    e    r r   t   e     x x"
+    # echo "         o    p    eeee n     n      v     eeee r  r  t   eeee x   x"
     echo -e "${RED}                                __________"
     echo "                              .~#########%%;~."
     echo "                             /############%%;.\\"
@@ -348,10 +355,10 @@ function welcome {
     echo "                           |#######\    /;;;;.,.|"
     echo "                           |#########\/%;;;;;.,.|"
     echo "                  XX       |##/~~\####%;;;/~~\;,|       XX"
-    echo "                XX..X      |#|  o  \##%;/  o  |.|      X..XX"
+    echo "                XX..X      |#|  o  \##%;/  O  |.|      X..XX"
     echo "              XX.....X     |##\____/##%;\____/.,|     X.....XX"
     echo "         XXXXX.....XX      \#########/\;;;;;;,, /      XX.....XXXXX"
-    echo "        X |......XX%,.@      \######/%;\;;;;, /      @#%,XX......| X"
+    echo "        X |......XX%,.@      \######/  \;;;;, /      @#%,XX......| X"
     echo "        X |.....X  @#%,.@     |######%%;;;;,.|     @#%,.@  X.....| X"
     echo "        X  \...X     @#%,.@   |# # # % ; ; ;,|   @#%,.@     X.../  X"
     echo "         X# \.X        @#%,.@                  @#%,.@        X./  #"
@@ -365,7 +372,7 @@ function welcome {
     echo ""
     echo ""
     echo -e "${YELLOW}################################################################################"
-    echo -e "${WHITE}Thanks for choosing OpenVertex for your 3D-printing endeavors! We hope you enjoy."
+    echo -e "${WHITE}Thanks for choosing me (STEvE) for your 3D-printing endeavors! We hope you enjoy."
     echo -e "To get started, we will need to install a few things. Sound ok? [${GREEN}Y${WHITE}/${RED}n${WHITE}]"
     echo -e "${YELLOW}################################################################################"
     echo -e "${NO_COLOR}"
@@ -432,6 +439,7 @@ function main {
         sudo rm -r /opt/open-vertex
     fi
 
+    # Grab OpenVertex Source
     sudo git clone https://github.com/needybot/open-vertex /opt/open-vertex
     sudo ln -s /opt/open-vertex/scripts/run.sh /usr/local/bin/openvertex
 
