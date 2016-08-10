@@ -7,7 +7,7 @@ FEDORA="fedora"
 OPENMESH_VER="6.2"
 OPENMESH_URL="http://www.openmesh.org/media/Releases/${OPENMESH_VER}/OpenMesh-${OPENMESH_VER}.tar.gz"
 OPENMESH_DL_DIR="/tmp/OpenMesh-${OPENMESH_VER=}"
-n
+
 RAPIDJSON_VER="1.0.2"
 RAPIDJSON_URL="https://github.com/miloyip/rapidjson/archive/v${RAPIDJSON_VER}.tar.gz"
 RAPIDJSON_DL_DIR="/tmp/rapidjson-${RAPIDJSON_VER}"
@@ -18,22 +18,22 @@ DEBIAN_DEPS=("clang" "cmake" "git" "python" "pip" "wget")
 FEDORA_DEPS=("cmake" "gcc" "gcc-c++" "git" "python" "pip" "wget")
 
 # TEXT COLOR
-NO_COLOR='\033[0m'
-BLACK='\033[0;30m'
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[0;33m'
-BLUE='\033[0;34m'
-PURPLE='\033[0;35m'
-CYAN='\033[0;36m'
-WHITE='\033[0;37m'
+NO_COLOR="\033[0m"
+RED="\033[0;31m"
+GREEN="\033[0;32m"
+YELLOW="\033[0;33m"
+CYAN="\033[0;36m"
+WHITE="\033[0;37m"
+
+REINSTALL=0
+USAGE=0
 
 
 function announce_install {
     echo -e "${YELLOW}"
     echo "#####################################"
-    echo "# OpenVertex installing $@"
-    echo "#####################################"
+    echo -e "# ${WHITE}OpenVertex installing $@"
+    echo -e "${YELLOW}#####################################"
     echo -e "${NO_COLOR}"
 }
 
@@ -122,8 +122,8 @@ function deps {
 
     echo -e "${YELLOW}"
     echo "############################n#########"
-    echo "Updating system packages"
-    echo "#####################################"
+    echo -e "${WHITE}Updating system packages"
+    echo -e "${YELLOW}#####################################"
     echo -e "${NO_COLOR}"
 
     (sudo $INSTALLER update -y) & spinner $!
@@ -135,7 +135,7 @@ function deps {
 
 
 function install_darwin {
-    echo -e "${YELLOW}OS X detected."
+    echo -e "${YELLOW}We have a Mac user."
     echo -e "${NO_COLOR}"
 
     if [ -z `which brew` ]; then
@@ -166,7 +166,7 @@ function install_darwin {
 
 
 function install_debian {
-    echo -e "${YELLOW}Debian-based system detected."
+    echo -e "${YELLOW}Oooh, Debian, huh? Lemme guess Skubuntu? No...Brubuntu?"
     echo -e "${NO_COLOR}"
 
     preflight
@@ -180,7 +180,10 @@ function install_debian {
 
     # install OpenMesh
     announce_install "OpenMesh"
-    install_openmesh $OPENMESH_URL $OPENMESH_DL_DIR
+    install_package $OPENMESH_URL $OPENMESH_DL_DIR \
+                    -DCMAKE_BUILD_TYPE=Release \
+                    -DC_MAKE_INSTALL_PREFIX=/usr \
+                    -DBUILD_APPS=OFF
 
     # install SolidPython
     announce_install "SolidPython"
@@ -191,7 +194,7 @@ function install_debian {
 
 
 function install_fedora {
-    echo -e "${YELLOW}Fedora-based system detected."
+    echo -e "${YELLOW}DNF with Fedora is all I'm sayin'."
     echo -e "${NO_COLOR}"
 
     preflight
@@ -203,7 +206,11 @@ function install_fedora {
 
     # install OpenMesh
     announce_install "OpenMesh"
-    install_openmesh ${OPENMESH_URL} ${OPENMESH_DL_DIR}
+    install_package ${OPENMESH_URL} ${OPENMESH_DL_DIR} \
+                    -DCMAKE_BUILD_TYPE=Release \
+                    -DC_MAKE_INSTALL_PREFIX=/usr \
+                    -DBUILD_APPS=OFF
+
 
     # install SolidPython
     announce_install "SolidPython"
@@ -213,38 +220,27 @@ function install_fedora {
 }
 
 
-function install_package () {
+function install_package {
     URL=$1
     DL_DIR=$2
+    CMAKE_ARGS=${@:3}
     wget ${URL} -O ${DL_DIR}.tar.gz
     tar xzf ${DL_DIR}.tar.gz
     mkdir -p ${DL_DIR}/build
-    (cd ${DL_DIR}/build && cmake .. &&
+
+    (cd ${DL_DIR}/build && cmake .. ${CMAKE_ARGS} &&
             make &&
             sudo make install
     )
 
 }
 
-function install_openmesh () {
-    wget ${OPENMESH_URL} -O ${OPENMESH_DL_DIR}.tar.gz
-    tar xzf ${OPENMESH_DL_DIR}.tar.gz
-    mkdir -p ${OPENMESH_DL_DIR}/build
-    (cd ${OPENMESH_DL_DIR}/build && cmake .. \
-                                          -DCMAKE_BUILD_TYPE=Release \
-                                          -DC_MAKE_INSTALL_PREFIX=/usr \
-                                          -DBUILD_APPS=OFF &&
-            make &&
-            sudo make install
-    )
-
-}
 
 function preflight {
     echo -e "${YELLOW}"
     echo "################################################"
-    echo "Checking for unmet system dependencies..."
-    echo "################################################"
+    echo -e "${WHITE}Checking for unmet system dependencies..."
+    echo -e "${YELLOW}################################################"
     echo -e "${NO_COLOR}"
 
     case $OS in
@@ -274,39 +270,28 @@ function preflight {
     function prompt_install {
         echo -e "${YELLOW}"
         echo "################################################"
-        echo "OpenVertex requires these packages be installed:"
-        echo "################################################"
+        echo -e "${WHITE}OpenVertex requires these packages be installed:"
+        echo -e "${YELLOW}################################################"
         for key in ${DEPS_TO_INSTALL[@]}; do
            echo -e "    ${GREEN}- $key"
         done
         echo -e "${YELLOW}################################################"
         echo ""
-        echo -e "${NO_COLOR}Continue? [Y/n]: "
+        echo -e "${NO_COLOR}Continue? [${GREEN}Y${NO_COLOR}/${RED}n${NO_COLOR}]: "
 
         read response
 
         case $response in
-            n )
+            no|No|NO|n|N|0 )
                 echo ""
-                echo "Operation aborted."
+                echo ":( I get it. Operation aborted."
                 exit 0
                 ;;
-            N )
-                echo ""
-                echo "Operation aborted."
-                exit 0
-                ;;
-            y )
-                :
-                ;;
-            Y)
-                :
-                ;;
-            "")
+            yes|Yes|YES|y|Y|1|"" )
                 :
                 ;;
             *)
-p                prompt_install
+                prompt_install
                 ;;
         esac
     }
@@ -329,7 +314,101 @@ function os_type {
 }
 
 
+function usage {
+    echo -e "${CYAN}USAGE: ${WHITE}openvertex [PATH_TO_MODEL]"
+    echo ""
+
+    exit 0
+}
+
+
+function check_already_installed {
+    if [[ `command -v openvertex` && REINSTALL -eq 0 ]]; then
+        echo ""
+        echo -e "${WHITE}Looks like OpenVertex has already been installed on this machine."
+        echo "To reinstall, run this installer again using the --force flag."
+
+        exit 1
+    fi
+}
+
+
+function welcome {
+    echo -e "${YELLOW}################################################################################"
+    echo ""
+    echo "         o    pp   eeee n     n  v       v eeee rr  ttttt eeee x   x"
+    echo "       o   o  p p  e    n n   n   v     v  e    r r   t   e     x x"
+    echo "       o   o  pp   eee  n   n n    v   v   eee  rr    t   eee    x"
+    echo "       o   o  p    e    n    nn     v v    e    r r   t   e     x x"
+    echo "         o    p    eeee n     n      v     eeee r  r  t   eeee x   x"
+    echo -e "${RED}                                __________"
+    echo "                              .~#########%%;~."
+    echo "                             /############%%;.\\"
+    echo "                            /######/~\/~\%%;,;,\\"
+    echo "                           |#######\    /;;;;.,.|"
+    echo "                           |#########\/%;;;;;.,.|"
+    echo "                  XX       |##/~~\####%;;;/~~\;,|       XX"
+    echo "                XX..X      |#|  o  \##%;/  o  |.|      X..XX"
+    echo "              XX.....X     |##\____/##%;\____/.,|     X.....XX"
+    echo "         XXXXX.....XX      \#########/\;;;;;;,, /      XX.....XXXXX"
+    echo "        X |......XX%,.@      \######/%;\;;;;, /      @#%,XX......| X"
+    echo "        X |.....X  @#%,.@     |######%%;;;;,.|     @#%,.@  X.....| X"
+    echo "        X  \...X     @#%,.@   |# # # % ; ; ;,|   @#%,.@     X.../  X"
+    echo "         X# \.X        @#%,.@                  @#%,.@        X./  #"
+    echo "          ##  X          @#%,.@              @#%,.@          X   #"
+    echo "        , \"# #X            @#%,.@          @#%,.@            X ##"
+    echo "           \`###X             @#%,.@      @#%,.@             ####'"
+    echo "          . \' ###              @#%.,@  @#%,.@              ###"
+    echo "            . \";\"                @#%.@#%,.@                ;\"\` \' "
+    echo "              \'                    @#%,.@                   ,."
+    echo "              \` ,                @#%,.@  @@                \`"
+    echo ""
+    echo ""
+    echo -e "${YELLOW}################################################################################"
+    echo -e "${WHITE}Thanks for choosing OpenVertex for your 3D-printing endeavors! We hope you enjoy."
+    echo -e "To get started, we will need to install a few things. Sound ok? [${GREEN}Y${WHITE}/${RED}n${WHITE}]"
+    echo -e "${YELLOW}################################################################################"
+    echo -e "${NO_COLOR}"
+
+    function get_response {
+        read response
+
+        case $response in
+            yes|Yes|YES|y|Y|1|"" )
+                echo "Sweeeeeet. Let's do this. In 3..."
+                sleep 1
+                echo "                             2..."
+                sleep 1
+                echo "                             1..."
+                sleep 1
+                echo ""
+                echo ""
+                return
+                ;;
+            no|No|NO|n|N|0 )
+                echo "Gotcha. See you later, pal. Let the record show that the operation has been canceled."
+                exit 1
+                ;;
+            * )
+                echo "Sorry, there buddy. I am a program, and only speak binary. Please answer yes or no."
+                echo ""
+                get_response
+                ;;
+        esac
+    }
+
+    get_response
+}
+
+
 function main {
+
+    if [ $USAGE -eq 1 ]; then
+        usage
+    fi
+
+    check_already_installed
+    welcome
     os_type
 
 
@@ -374,5 +453,13 @@ function main {
          /opt/open-vertex/openmesh/src/find_vertex_neighbors.cpp -o /usr/local/bin/find_vertex_neighbors
 
 }
+
+for arg in $@; do
+    if [[ ${arg} = '-h' || ${arg} = "--help" ]]; then
+        USAGE=1
+    elif [[ ${arg} = "-f" || ${arg} = "--force" ]]; then
+        REINSTALL=1
+    fi
+done
 
 main
