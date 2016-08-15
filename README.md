@@ -48,6 +48,15 @@ $ bucky -u
 Running the above will pull the latest code from the `master` branch down to
 your system.
 
+###Removing Bucky
+It's pretty easy to remove Bucky, but, be forewarned, you will not be able to do
+so without some pretty passive-agressive efforts to deter you:
+
+```sh
+bucky -r
+```
+**Of Note**: Removing Bucky will not remove its dependencies, and will not
+remove the folder of generated vertices (`~/Documents/__bucky__`).
 
 ##Using Bucky
 Bucky comes with three object mesh models pre-installed, which can be found at

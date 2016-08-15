@@ -6,11 +6,21 @@ import os
 import random
 import shutil
 import sys
+<<<<<<< HEAD
 
 from sh import bucky_el, bucky_vn, connector, openscad, sudo
 
 BUILD_PATH = '/opt/bucky/build'
 CONFIG_FILE = '/opt/bucky/config.json'
+=======
+import time
+
+from sh import bucky_el, bucky_vn, connector, openscad, sudo
+
+BUCKY_PATH = '/opt/bucky'
+BUILD_PATH = os.path.join(BUCKY_PATH, 'build')
+CONFIG_FILE = os.path.join(BUCKY_PATH,'config.json')
+>>>>>>> develop
 ROOT_DIR = os.path.expanduser('~/Documents/__bucky__')
 
 TMP_DIR = '/tmp/{}'.format(str(random.getrandbits(64)))
@@ -19,6 +29,8 @@ STL_DIR = os.path.join(TMP_DIR, 'stl')
 
 NEIGHBORS_FILE = os.path.join(TMP_DIR, 'neighbors.txt')
 EDGE_LENGTHS_FILE = os.path.join(TMP_DIR, 'edge_lengths.txt')
+
+PYTHON_MAJOR_VERS = sys.version_info[0]
 
 PROMPTS = [
     'ACHIEVEMENT UNLOCKED',
@@ -143,6 +155,8 @@ def parse_args():
                         action='store_true', help='used to recompile Bucky\'s binaries')
     parser.add_argument('-m', '--model', type=str, dest='model_path',
                         help='absolute path to the .obj model file')
+    parser.add_argument('-r', '--remove', action="store_true", dest='remove',
+                        help='used to completely remove bucky from your system')
     parser.add_argument('-u', '--update', action="store_true",
                         dest='update', help='used to update the bucky codebase')
 
@@ -172,6 +186,44 @@ def preflight(model_file):
     return os.path.join(TMP_DIR, model_file)
 
 
+def remove_bucky():
+
+    if PYTHON_MAJOR_VERS == 2:
+        prompt_func = raw_input
+    else:
+        prompt_func = input
+
+    input_string = '''
+    ################################################################################
+    \m/~\m/~\m/~\m/~\m/~\m/~\m/~ DECIDE BUCKY'S FATE!!! ~\m/~\m/~\m/~\m/~\m/~\m/~\m/
+    ################################################################################
+
+    Ok, actually, there's only one choice. Please type 'die bucky die' to confirm.\n
+    '''
+
+    if prompt_func(input_string) == 'die bucky die':
+        print('\n\n')
+        report('Reluctantly removing Bucky components from your system.', report_type="SAD PANTS")
+        time.sleep(1)
+        sudo.rm('-rf', BUCKY_PATH)
+        sudo.rm('-f', '/usr/local/bin/bucky')
+        sudo.rm('-f', '/usr/local/bin/bucky_el')
+        sudo.rm('-f', 'usr/local/bin/bucky_vn')
+        sudo.rm('-f', '/usr/local/bin/connector')
+
+        print('\n--------------------------------------------------------------------------------')
+        print('{}------------------------------- GREAT NEWS!!! ----------------------------------'.format(GREEN))
+        print('{}--------------------------------------------------------------------------------\n'.format(NO_COLOR))
+        report('SUCCESS! You are now Bucky-free...happy Friday! \n\tIt\'s Friday somewhere, right? \n\t\tWe can\'t really tell without Bucky in our world :(',
+               report_type='NOT_SUCCESS')
+    else:
+        print('--------------------------------------------------------------------------------')
+        print('{}------------------------------- GREAT NEWS!!! ----------------------------------'.format(GREEN))
+        print('{}--------------------------------------------------------------------------------\n'.format(NO_COLOR))
+        report('SUCCESS! You decided to not kill Bucky! \n\tWe REJOICE in your benevolent heart!!', report_type='SO OVERJOYED RIGHT NOW')
+    return
+
+
 def report(msg, report_type='INFO'):
 
     report_string = '{}[{}] {}{}\n'
@@ -182,7 +234,6 @@ def report_err(e):
 
     err_string = '{}[DANG] {}Something went horribly wrong:\n\t-> {}'
     print(err_string.format(RED, NO_COLOR, e))
-
 
 
 def update():
@@ -207,6 +258,13 @@ if __name__ == '__main__':
             report_err(e)
             sys.exit(1)
 
+    if args.remove:
+        try:
+            remove_bucky()
+            sys.exit(0)
+        except Exception as e:
+            report_err(e)
+            sys.exit(1)
 
     if args.update:
         try:
