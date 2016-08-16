@@ -56,7 +56,7 @@ def bucky(mesh_model):
         mesh_model (str): the path to the mesh model to convert
     """
 
-    #Generate all neighbors of all vertices
+    # Generate all neighbors of all vertices
     report('Finding vertex neighbors from {}'.format(mesh_model))
     try:
         bucky_vn(mesh_model, _out=NEIGHBORS_FILE)
@@ -76,7 +76,7 @@ def bucky(mesh_model):
         sys.exit(1)
 
 
-    #Calculate edge lengths
+    # Calculate edge lengths
     report('Saving edge lengths to {}.'.format(EDGE_LENGTHS_FILE))
     try:
         edge_lengths_data = bucky_el(mesh_model, CONFIG_FILE,
@@ -87,7 +87,7 @@ def bucky(mesh_model):
         sys.exit(1)
 
 
-    #Generate .scad
+    # Generate .scad
     report('Generating {} connectors to {}.'.format(num_vertices, SCAD_DIR))
     try:
         bucky_connector('-n', NEIGHBORS_FILE, '-o', SCAD_DIR)
@@ -97,14 +97,14 @@ def bucky(mesh_model):
         sys.exit(1)
 
 
-    #Generate .stl
+    # Generate .stl
     for i in range(0, num_vertices):
         remaining = num_vertices - (i + 1)
         report('Generating connector {}...{} remaining.'.format(i + 1, remaining))
         try:
             openscad('-o',
-                     os.path.join(STL_DIR, 'conn{}.stl'.format(i)),
-                     os.path.join(SCAD_DIR, 'conn/{}.scad'.format(i)))
+                     os.path.join(STL_DIR, 'connector_{}.stl'.format(i)),
+                     os.path.join(SCAD_DIR, 'connector_{}.scad'.format(i)))
             report('I generated that STL for ya.',
                    report_type=random.choice(PROMPTS))
         except Exception as e:
@@ -145,7 +145,7 @@ def parse_args():
 
     parser.add_argument('-c', '--compile-binaries', dest='compile_binaries',
                         action='store_true', help='used to recompile Bucky\'s binaries')
-    parser.add_argument('-m', '--model', type=str, dest='model_path',
+    parser.add_argument('-m', '--model_path', type=str, dest='model_path',
                         help='absolute path to the .obj model file')
     parser.add_argument('-r', '--remove', action="store_true", dest='remove',
                         help='used to completely remove bucky from your system')
@@ -155,7 +155,9 @@ def parse_args():
     if len(sys.argv[1:]) == 0:
         parser.print_help()
         parser.exit()
-
+    elif len(sys.argv[1:]) == 1:
+        if os.path.exists(sys.argv[1]) and sys.argv[1][:-4] == '.obj':
+            return parser.parse_args(args=['--model_path', sys.argv[1]])
     return parser.parse_args()
 
 
@@ -234,6 +236,7 @@ def update():
     Updates the Bucky source code from GitHub.
     """
 
+    report('Updating Bucky\'s source code.', report_type='JUST TRYNA MAINTAIN')
     os.chdir(BUILD_PATH)
     sudo('git', 'pull', 'origin', 'master')
 
