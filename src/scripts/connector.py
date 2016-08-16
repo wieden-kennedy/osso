@@ -80,13 +80,14 @@ def render_to_file(centers, neighbors, out_path):
 
     """
 
-    use('/opt/bucky/src/scad/connector.scad')
+    use('/opt/osso/src/scad/connector.scad')
 
-    with open('/opt/bucky/config.json') as f:
+    with open('/opt/osso/config.json', 'r') as f:
         params = json.loads(f.read())
 
     for i, center in enumerate(centers):
-        # connector object injected into current ns by `solid.use`
+
+        # connector object injected into current ns by `use`
         model = connector(center, neighbors[i],
                           params['dia_rod'], params['dia_sphere'],
                           params['rod_wall'], params['conn_len'])
