@@ -101,5 +101,3 @@ handles creating connector models. We will use the icosahedron model for this wa
 
 5. Save G-Code `File - Save GCode...` to an SD card, and print on your 3D printer.
 
-
-e
