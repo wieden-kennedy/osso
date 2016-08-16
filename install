@@ -92,13 +92,17 @@ function install_darwin {
     announce_install "OpenSCAD"
     brew tap caskroom/cask
     brew install --force Caskroom/cask/openscad
-
+    
     # install OpenMesh
     announce_install "OpenMesh"
     brew install open-mesh
 
+    # symlink OpenMesh lib + include files for compiling bucky executables
     target_dir=$(ls -1 /usr/local/Cellar/open-mesh/)
-    sudo cp -r /usr/local/Cellar/open-mesh/${target_dir}/lib/libOpenMesh* /usr/lib/
+
+    for lib_file in /usr/local/Cellar/open-mesh/${target_dir}/lib/libOpenMesh*; do
+        sudo ln -s ${lib_file} /usr/lib/$(basename ${lib_file})
+    done
     sudo ln -s /usr/local/Cellar/open-mesh/${target_dir}/include/OpenMesh /usr/include/OpenMesh
 
     # install SolidPython
@@ -107,7 +111,7 @@ function install_darwin {
     sudo $(which pip) install solidpython
 
     # link OpenSCAD binary to "openscad" for convenience
-    ln -s /Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD openscad
+    sudo ln -s /Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD /usr/local/bin/openscad
 
     # install sh for pip/python
     sudo pip install sh
@@ -134,8 +138,11 @@ function install_debian {
                     -DCMAKE_BUILD_TYPE=Release \
                     -DBUILD_APPS=OFF
 
-    sudo mv /usr/local/lib/libOpenMesh* /usr/lib/
-    sudo mv /usr/local/include/OpenMesh /usr/include/
+    # symlink OpenMesh lib + include files for compiling bucky executables
+    for lib_file in /usr/local/lib/libOpenMesh*; do
+        sudo ln -s ${lib_file} /usr/lib/$(basename ${lib_file})
+    done
+    sudo ln -s /usr/local/include/OpenMesh /usr/include/OpenMesh
 
     # install SolidPython
     announce_install "SolidPython"
@@ -164,8 +171,11 @@ function install_fedora {
                     -DCMAKE_BUILD_TYPE=Release \
                     -DBUILD_APPS=OFF
 
-    sudo mv /usr/local/lib/libOpenMesh* /usr/lib64/
-    sudo mv /usr/local/include/OpenMesh /usr/include/
+    # symlink OpenMesh lib + include files for compiling bucky executables
+    for lib_file in /usr/local/lib/libOpenMesh*; do
+        sudo ln -s ${lib_file} /usr/lib64/$(basename ${lib_file})
+    done
+    sudo ln -s /usr/local/include/OpenMesh /usr/include/OpenMesh
 
     # install SolidPython
     announce_install "SolidPython"
@@ -176,6 +186,11 @@ function install_fedora {
     sudo pip install sh
 }
 
+
+function log_install {
+    installer=$1
+
+}
 
 function install_source {
     URL=$1
@@ -472,7 +487,7 @@ function main {
         sudo ln -s /opt/bucky/src/scripts/bucky.py /usr/local/bin/bucky
     fi
 
-    if [ ! -L /usr/local/bin/connector ]; then
+    if [ ! -L /usr/local/bin/bucky_connector ]; then
         sudo ln -s /opt/bucky/src/scripts/connector.py /usr/local/bin/bucky_connector
     fi
 

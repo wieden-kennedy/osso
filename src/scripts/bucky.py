@@ -266,7 +266,7 @@ if __name__ == '__main__':
             report_err(e)
             sys.exit(1)
 
-    mesh_model = preflight(args.model)
+    mesh_model = preflight(args.model_path)
     bucky(mesh_model)
 
     date_string = "{:%Y-%m-%dT%H:%M}".format(datetime.datetime.now())
