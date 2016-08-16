@@ -63,7 +63,11 @@ function deps {
     echo -e "${YELLOW}#########################"
     echo -e "${NO_COLOR}"
 
-    sudo $INSTALLER update -y
+    if [ $OS = 'darwin' ]; then
+        $INSTALLER update -y
+    else
+        sudo $INSTALLER update -y
+    fi
 
     for dep in ${DEPS_TO_INSTALL[@]}; do
         package_install $dep
@@ -86,15 +90,21 @@ function install_darwin {
 
     # install OpenSCAD
     announce_install "OpenSCAD"
-    brew install openscad
+    brew tap caskroom/cask
+    brew install --force Caskroom/cask/openscad
 
     # install OpenMesh
     announce_install "OpenMesh"
-    brew install open-mesh rapidjson
+    brew install open-mesh
+
+    target_dir=$(ls -1 /usr/local/Cellar/open-mesh/)
+    sudo cp -r /usr/local/Cellar/open-mesh/${target_dir}/lib/libOpenMesh* /usr/lib/
+    sudo ln -s /usr/local/Cellar/open-mesh/${target_dir}/include/OpenMesh /usr/include/OpenMesh
 
     # install SolidPython
     announce_install "SolidPython"
-    sudo /usr/bin/pip install solidpython
+    brew install rapidjson
+    sudo $(which pip) install solidpython
 
     # link OpenSCAD binary to "openscad" for convenience
     ln -s /Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD openscad
@@ -198,67 +208,36 @@ function os_type {
 
 function package_install {
 
-    case $1 in
-
-        "build-essential" )
-            announce_install "build-essential"
-            sudo $INSTALLER install -y build-essential
-            ;;
-
-        "clang" )
-            announce_install "clang"
-            sudo $INSTALLER install -y clang
-            ;;
-
-        "cmake" )
-            announce_install "cmake"
-            sudo $INSTALLER install -y cmake
-            ;;
-
-        "gcc" )
-            announce_install "gcc"
-            sudo $INSTALLER install -y gcc
-            ;;
-
-        "gcc-c++" )
-            announce_install "gcc-c++"
-            sudo $INSTALLER install -y gcc-c++
-            ;;
-
-        "git" )
-            announce_install "git"
-            if [ $OS = $DARWIN ]; then
-                $INSTALLER install git
-            else
-                sudo $INSTALLER install -y git
+    if [ $1 = "python" ]; then
+        announce_install "python"
+        if [ $OS = $DARWIN ]; then
+            $INSTALLER install -y python
+            $INSTALLER link python
+        elif [ $OS = $DEBIAN ]; then
+            sudo $INSTALLER install -y python2.7
+            sudo ln -s /usr/bin/python2.7 /usr/bin/python
+        elif [ $OS = $FEDORA ]; then
+            sudo $INSTALLER install -y python
+        fi
+    elif [ $1 = "pip" ]; then
+        announce_install "pip"
+        if [ $OS != $DARWIN ]; then
+            wget https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py
+            sudo $(which python) get-pip.py
+        else
+            if [ -z $(which pip) ]; then
+                sudo easy_install pip
             fi
-            ;;
+        fi
+    else
+        announce_install $1
+        if [ $OS = $DARWIN ]; then
+            $INSTALLER install -y $1
+        else
+            sudo $INSTALLER install -y $1
+        fi
+    fi
 
-        "python" )
-            announce_install "python"
-            if [ $OS = $DARWIN ]; then
-                $INSTALLER install -y python
-                $INSTALLER link python
-            elif [ $OS = $DEBIAN ]; then
-                sudo $INSTALLER install -y python2.7
-                sudo ln -s /usr/bin/python2.7 /usr/bin/python
-            elif [ $OS = $FEDORA ]; then
-                sudo $INSTALLER install -y python
-            fi
-            ;;
-
-        "pip" )
-            announce_install "pip"
-            if [ $OS != $DARWIN ]; then
-                wget https://bootstrap.pypa.io/get-pip.py -O /tmp/get-pip.py
-                sudo $(which python) get-pip.py
-            fi
-            ;;
-        "wget" )
-            announce_install "wget"
-            sudo $INSTALLER install -y wget
-            ;;
-    esac
 }
 
 
@@ -480,12 +459,13 @@ function main {
     # Grab Bucky Source
     echo -e "${YELLOW}#########################################################"
     echo -e "${WHITE}Grabbing Bucky's source code and installing"
-    echo -e "${YELLOW}################################################"
+    echo -e "${YELLOW}#########################################################"
     if [ -d /opt/bucky ]; then
         sudo rm -rf /opt/bucky
-    else
-        sudo git clone https://github.com/wieden-kennedy/bucky /opt/bucky
     fi
+
+    git clone https://github.com/wieden-kennedy/bucky /tmp/bucky
+    sudo mv /tmp/bucky /opt/
 
     if [ ! -L /usr/local/bin/bucky ]; then
         sudo chmod +x /opt/bucky/src/scripts/bucky.py
@@ -493,12 +473,12 @@ function main {
     fi
 
     if [ ! -L /usr/local/bin/connector ]; then
-        sudo ln -s /opt/bucky/src/scripts/connector.py /usr/local/bin/connector
+        sudo ln -s /opt/bucky/src/scripts/connector.py /usr/local/bin/bucky_connector
     fi
 
     echo -e "${YELLOW}#########################################################"
-    echo -e "${WHITE}Compiling rad C++ programs"
-    echo -e "${YELLOW}################################################"
+    echo -e "${WHITE}Compiling super rad-ass C++ programs"
+    echo -e "${YELLOW}#########################################################"
 
 
     # Compile Shared Executables
