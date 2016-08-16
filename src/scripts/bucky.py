@@ -8,7 +8,7 @@ import shutil
 import sys
 import time
 
-from sh import bucky_el, bucky_vn, connector, openscad, sudo
+from sh import bucky_el, bucky_vn, bucky_connector, openscad, sudo
 
 BUCKY_PATH = '/opt/bucky'
 BUILD_PATH = os.path.join(BUCKY_PATH, 'build')
