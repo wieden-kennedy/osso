@@ -6,13 +6,6 @@ import os
 import random
 import shutil
 import sys
-<<<<<<< HEAD
-
-from sh import bucky_el, bucky_vn, connector, openscad, sudo
-
-BUILD_PATH = '/opt/bucky/build'
-CONFIG_FILE = '/opt/bucky/config.json'
-=======
 import time
 
 from sh import bucky_el, bucky_vn, connector, openscad, sudo
@@ -20,7 +13,6 @@ from sh import bucky_el, bucky_vn, connector, openscad, sudo
 BUCKY_PATH = '/opt/bucky'
 BUILD_PATH = os.path.join(BUCKY_PATH, 'build')
 CONFIG_FILE = os.path.join(BUCKY_PATH,'config.json')
->>>>>>> develop
 ROOT_DIR = os.path.expanduser('~/Documents/__bucky__')
 
 TMP_DIR = '/tmp/{}'.format(str(random.getrandbits(64)))
@@ -98,7 +90,7 @@ def bucky(mesh_model):
     #Generate .scad
     report('Generating {} connectors to {}.'.format(num_vertices, SCAD_DIR))
     try:
-        connector('-n', NEIGHBORS_FILE, '-o', SCAD_DIR)
+        bucky_connector('-n', NEIGHBORS_FILE, '-o', SCAD_DIR)
         report('I did it!', report_type='SCAD-TASTIC')
     except Exception as e:
         report_err(e)

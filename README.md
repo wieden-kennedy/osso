@@ -18,20 +18,23 @@ Bucky is compatible with, and tested on:
 
 1. cURL the Bucky installer file, then run it!
 
-    ```sh
-    $ curl https://raw.githubusercontent.com/wieden-kennedy/bucky/master/install > install && bash install
-    ```
-Bucky will walk you through installing all of its dependencies, and compile and
-install its own binaries into your system path.
+    ```shell
+    $ curl -O https://raw.githubusercontent.com/wieden-kennedy/bucky/master/install && bash install
 
-Once that's all done, you can start using it!
+    # NOTE: If you'd rather redirect cURL to bash with a pipe (`curl foobar | bash`),
+    # just know that in doing so, you will bypass all prompts for consent (Bucky
+    # will go hog wild and install whatever it wants/needs to install). Up to you.
+    ```
+    
+Bucky will walk you through installing all of its dependencies, and compile and
+install its own binaries into your system path. Once that's all done, you can start using it!
 
 ###(Re)Compiling Bucky's Dependent Executables
 If for some reason you need to recompile the dependent bucky executable files,
 you can do so super easily by re-running the install file using the appropriate
 flag:
 
-```sh
+```shell
 $ bucky -c
 ```
 
@@ -42,7 +45,7 @@ project and build the executables there. The XCode project is located at `/opt/b
 If you'd like to do an in-place upgrade of Bucky, you can do so by running bucky
 with the `-u` flag:
 
-```sh
+```shell
 $ bucky -u
 ```
 Running the above will pull the latest code from the `master` branch down to
@@ -52,7 +55,7 @@ your system.
 It's pretty easy to remove Bucky, but, be forewarned, you will not be able to do
 so without some pretty passive-agressive efforts to deter you:
 
-```sh
+```shell
 bucky -r
 ```
 **Of Note**: Removing Bucky will not remove its dependencies, and will not
@@ -97,5 +100,4 @@ handles creating connector models. We will use the icosahedron model for this wa
 4. Load Cura profile `cura_profile.ini` from the generated folder using `File - Open Profile...`.
 
 5. Save G-Code `File - Save GCode...` to an SD card, and print on your 3D printer.
-
 
