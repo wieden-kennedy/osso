@@ -80,24 +80,24 @@ def render_to_file(centers, neighbors, out_path):
 
     """
 
-    use('/opt/open-vertex/scripts/connector.scad')
+    use('/opt/osso/src/scad/connector.scad')
 
-    with open('/opt/open-vertex/scripts/config.json') as f:
+    with open('/opt/osso/config.json', 'r') as f:
         params = json.loads(f.read())
 
     for i, center in enumerate(centers):
-        # connector object injected into current ns by `solid.use`
+
+        # connector object injected into current ns by `use`
         model = connector(center, neighbors[i],
                           params['dia_rod'], params['dia_sphere'],
                           params['rod_wall'], params['conn_len'])
 
-        file_name = '{}.scad'.format(i)
-        render_path = os.path.join(out_path, 'conn')
+        file_name = 'connector_{}.scad'.format(i)
 
-        if not os.path.exists(render_path):
-            os.makedirs(render_path)
+        if not os.path.exists(out_path):
+            os.makedirs(out_path)
 
-        scad_render_to_file(model, os.path.join(render_path, file_name))
+        scad_render_to_file(model, os.path.join(out_path, file_name))
 
 
 if __name__ == '__main__':
