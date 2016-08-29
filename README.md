@@ -33,13 +33,6 @@ osso comes with three object mesh models pre-installed, which can be found at
 `/opt/osso/support/mesh/`. These are a great place to start to see how Bucky
 handles creating connector models. We will use the icosahedron model for this walkthrough.
 
-
-
-##Using osso
-osso comes with three object mesh models pre-installed, which can be found at
-`/opt/osso/support/mesh/`. These are a great place to start to see how Bucky
-handles creating connector models. We will use the icosahedron model for this walkthrough.
-
 1. To get started, run the following command from a terminal prompt:
 
    ```sh
