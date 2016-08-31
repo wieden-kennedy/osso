@@ -1,5 +1,3 @@
-#osso
-
 ![ring](https://github.com/wieden-kennedy/osso/blob/master/support/osso.jpg?raw=true)
 
 Given a 3D wireframe model in OBJ, STL, OFF, or OM format, osso generates 3D models for unique connectors at every vertex, as well as length for every edge.
