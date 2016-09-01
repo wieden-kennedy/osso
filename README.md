@@ -6,8 +6,8 @@ Given a 3D wireframe model in OBJ, STL, OFF, or OM format, osso generates 3D mod
 osso is compatible with, and tested on:
 
 * OS X *(tested on 10.11)*
-* Debian-based Linux *(tested on Ubuntu 16.04)*
-* Fedora-based Linux *(tested on Fedora 23)*
+* Ubuntu *(tested on Ubuntu 16.04)*
+* Fedora *(tested on Fedora 23)*
 
 
 ##Installation
