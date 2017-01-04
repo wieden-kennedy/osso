@@ -48,7 +48,8 @@ function compile_osso_executables {
                 sudo mkdir build
 
             else
-                (cd build && sudo rm -rf *)
+                (cd /opt/osso && sudo mv build /tmp/build)
+                sudo mkdir build
 
             fi &&
 
