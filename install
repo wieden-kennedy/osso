@@ -11,7 +11,7 @@ FEDORA_DEPS=("clang" "cmake" "gcc" "gcc-c++" "git" "python" "pip" "wget")
 
 NO_COLOR="\033[0m"
 RED="\033[0;31m"
-nGREEN="\033[0;32m"
+GREEN="\033[0;32m"
 YELLOW="\033[0;33m"
 CYAN="\033[0;36m"
 WHITE="\033[0;37m"
@@ -44,15 +44,11 @@ function compile_osso_executables {
 
     (cd /opt/osso &&
 
-            if [ ! -e build ]; then
-                sudo mkdir build
-
-            else
+            if [ -e build ]; then
                 (cd /opt/osso && sudo mv build /tmp/build)
-                sudo mkdir build
-
             fi &&
 
+            sudo mkdir build &&
             (cd build && sudo cmake ..) &&
             (cd build && sudo make)
     )
@@ -63,7 +59,7 @@ function compile_osso_executables {
 function install_dependencies {
 
     # Ensures system is up-to-date and calls install function
-    # for each dependency.
+f    # for each dependency.
 
     echo -e "${YELLOW}#########################"
     echo -e "${WHITE}Updating system packages"
