@@ -59,7 +59,7 @@ function compile_osso_executables {
 function install_dependencies {
 
     # Ensures system is up-to-date and calls install function
-f    # for each dependency.
+    # for each dependency.
 
     echo -e "${YELLOW}#########################"
     echo -e "${WHITE}Updating system packages"
